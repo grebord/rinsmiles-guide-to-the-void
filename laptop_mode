@@ -1,0 +1,30 @@
+#!/bin/sh
+# Laptop mode setup script - part of: rinsmiles guide to the Void.
+# Usage: laptop_mode {enable|disable} <oshdd>
+# Requires noatime mnt opt be set on oshdd's filesystems, and hdparm. See:
+# https://www.kernel.org/doc/html/latest/admin-guide/laptops/laptop-mode.html
+#
+hdparm -qf "$2" || exit
+case "$1" in
+	enable)
+		# enable laptop mode with its default values for the vm subsystem
+		sysctl -qw vm.laptop_mode=5 			\
+			vm.dirty_writeback_centisecs=60000 	\
+			vm.dirty_expire_centisecs=60000 	\
+			vm.dirty_ratio=40 				\
+			vm.dirty_background_ratio=5
+		mount --all -o remount,commit=600 -t ext4,btrfs
+		hdparm -qa2048 -qB127 -qS6 "$2"
+	;;
+	disable)
+		# disable laptop mode, setting parameters to their default values
+		# where commit, writeback and readahead's are suggested in the guide
+		sysctl -qw vm.laptop_mode=0 			\
+			vm.dirty_writeback_centisecs=1500 	\
+			vm.dirty_expire_centisecs=3000 		\
+			vm.dirty_ratio=20 				\
+			vm.dirty_background_ratio=10
+		mount --all -o remount,commit=15 -t ext4,btrfs
+		hdparm -qa512 -qB192 -qS0 "$2"
+	;;
+esac

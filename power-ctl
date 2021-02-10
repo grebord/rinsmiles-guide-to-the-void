@@ -1,0 +1,75 @@
+#!/bin/sh
+# Power mode handler script - part of: rinsmiles guide to the Void.
+# Use HDD APM and spindown features, and allow laptop-mode.
+manage_hdd=1
+# Hdparm's APM and spindown options.
+hdparm_options_powersave='-qB127 -qS40'
+hdparm_options_performance='-qB192 -qS0'
+# Use laptop mode for further power savings. Overrides the above.
+use_laptop_mode=1
+# Force using specified root HDD. Values: {no|/dev/disk/by-id/<hdd-id>}
+force_hdd='no'
+# Allow setting CPU governors and driver state.
+manage_cpu=1
+# Set CPU frequency governors.
+governor_powersave='powersave'
+governor_performance='ondemand'
+# Use Intel P-State driver for scaling if available. Overrides the above.
+use_pstate_scaling=1
+#
+# Setup: HDD
+if 	[ "$force_hdd" != 'no' ] ; then
+	rd_id="$force_hdd"
+else # get the device containing the root mount, as long as it is compatible
+	rd_id=$(findmnt -enr -o SOURCE -t ext4,btrfs -M / | cut -c 6-8)
+	rd_id_pass=$(cat /sys/class/block/$rd_id/queue/rotational || echo 0)
+	rd_id="/dev/$rd_id"
+	[ "$rd_id_pass" != '1' ] && manage_hdd=0
+fi
+[ ! -x /etc/acpi/resources/laptop_mode ] && use_laptop_mode=0
+#
+# Setup: CPU
+cpu_dir='/sys/devices/system/cpu'
+if [ $use_pstate_scaling -eq 1 ] && [ -w $cpu_dir/intel_pstate/status ] ; then
+	governor_powersave='powersave'
+	governor_performance='performance'
+else	use_pstate_scaling=0
+fi
+#
+set_hdd_mode() {
+	if [ $use_laptop_mode -eq 1 ] ; then
+		/etc/acpi/resources/laptop_mode $lmode "$rd_id"
+	else	hdparm $hdparam "$rd_id"
+	fi
+}
+set_cpu_mode() {
+	[ $use_pstate_scaling -eq 1 ] && \
+		echo 'active' > $cpu_dir/intel_pstate/status
+	for d in $cpu_dir/cpufreq/policy[0-9]* ; do
+		echo $governor > "$d/scaling_governor"
+	done
+}
+#
+case "$2" in
+	AC*|ADP0)
+		case "$4" in
+			00000000) # battery mode configuration
+				lmode='enable'
+				hdparam=$hdparm_options_powersave
+				governor=$governor_powersave
+				[ $manage_hdd -eq 1 ] && set_hdd_mode
+				[ $manage_cpu -eq 1 ] && set_cpu_mode
+				# Signal the user that backlight should be lowered:
+				[ -x 	/etc/acpi/handlers/backlight-ctl ] && \
+					/etc/acpi/handlers/backlight-ctl down
+			;;
+			00000001) # ac_power mode configuration
+				lmode='disable'
+				hdparam=$hdparm_options_performance
+				governor=$governor_performance
+				[ $manage_hdd -eq 1 ] && set_hdd_mode
+				[ $manage_cpu -eq 1 ] && set_cpu_mode
+			;;
+		esac
+	;;
+esac

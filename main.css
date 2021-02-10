@@ -1,0 +1,112 @@
+body {
+    font-family: 'sans-serif';
+    font-size: 16px;
+    background: LightGray;
+}
+div.contenido {
+    margin: 20px auto;
+    width: 960px;
+    padding: 10px 40px;
+    background: WhiteSmoke;
+}
+header, footer {
+    position: relative;
+    margin: auto;
+    text-align: center;
+}
+nav {
+    width:100%;
+    text-align: center;
+    background: #deede4;
+    border-style: solid none;
+    border-width: 1px;
+    border-color: Teal;
+    padding: 10px 0px;
+}
+nav a {
+    text-decoration: none;
+    margin: 0px 20px;
+    color: Black;
+}
+nav a:hover {
+    color: Teal;
+}
+div {
+    padding-bottom: 5px;
+}
+dt {
+    padding-top: 10px;
+}
+dt.dentro {
+    padding-top: 1px;
+}
+dd {
+    font-family: 'monospace';
+}
+dd.texto {
+    font-family: 'sans-serif';
+}
+p {
+    margin-bottom: 1px;
+}
+ul {
+    margin: 1px;
+}
+span.fijo {
+    font-family: 'monospace';
+}
+hr {
+    margin-top: 25px;
+    color: #deede4;
+}
+pre {
+    font-family: 'monospace';
+    font-size: 14px;
+    margin-right: 40px;
+}
+pre hr {
+    color: LightGray;
+    margin-top: 5px;
+    margin-bottom: -5px;
+}
+table {
+    margin: auto;
+    width: 100%;
+}
+td {
+    width: 50%;
+    text-align: left;
+    padding-left: 10px;
+    vertical-align: top;
+}
+div.leftbanner {
+    position:absolute;
+    left:15px;
+    top:-10px;
+}
+div.button {
+    background:#53936d;
+    padding: 5px 15px;
+    margin: 0px 0px 2px;
+}
+div.button a {
+    color: White;
+    text-decoration: none;
+}
+div.button a:hover {
+    color: LightCyan;
+}
+section h1 {
+    color: #2e523d;
+}
+section h3 {
+    color: #2e523d;
+    padding-top: 5px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+section h4 {
+    color: #1c3124;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
