@@ -17,5 +17,5 @@ This guide assumes that the user is familiar with the use of a shell, core utili
 rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit
 https://creativecommons.org/licenses/by/4.0 
 
-# Why Rinsmiles?
+### Why Rinsmiles?
 *Rinsmiles* is a username I used to use on Reddit, where I released the first version of this guide.
