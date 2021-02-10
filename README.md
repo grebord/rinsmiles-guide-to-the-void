@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Rinsmiles' Guide to the Void
 
 rinsmiles´ Guide to the Void is a guide for installing and setting up a Void operating system:
 
