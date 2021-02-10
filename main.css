@@ -1,5 +1,5 @@
 body {
-    font-family: 'sans-serif';
+    font-family: source-sans-pro, sans-serif;
     font-size: 16px;
     background: LightGray;
 }
@@ -41,10 +41,10 @@ dt.dentro {
     padding-top: 1px;
 }
 dd {
-    font-family: 'monospace';
+    font-family: source-code-pro, monospace;
 }
 dd.texto {
-    font-family: 'sans-serif';
+    font-family: source-sans-pro, sans-serif;
 }
 p {
     margin-bottom: 1px;
@@ -53,14 +53,14 @@ ul {
     margin: 1px;
 }
 span.fijo {
-    font-family: 'monospace';
+    font-family: source-code-pro, monospace;
 }
 hr {
     margin-top: 25px;
     color: #deede4;
 }
 pre {
-    font-family: 'monospace';
+    font-family: source-code-pro, monospace;
     font-size: 14px;
     margin-right: 40px;
 }
