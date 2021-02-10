@@ -1,5 +1,5 @@
 body {
-    font-family: source-sans-pro, sans-serif;
+    font-family: 'Source Sans Pro', 'Source Sans 3', sans-serif;
     font-size: 16px;
     background: LightGray;
 }
@@ -41,10 +41,10 @@ dt.dentro {
     padding-top: 1px;
 }
 dd {
-    font-family: source-code-pro, monospace;
+    font-family: 'Source Code Pro', monospace;
 }
 dd.texto {
-    font-family: source-sans-pro, sans-serif;
+    font-family: 'Source Sans Pro', 'Source Sans 3', sans-serif;
 }
 p {
     margin-bottom: 1px;
@@ -53,14 +53,14 @@ ul {
     margin: 1px;
 }
 span.fijo {
-    font-family: source-code-pro, monospace;
+    font-family: 'Source Code Pro', monospace;
 }
 hr {
     margin-top: 25px;
     color: #deede4;
 }
 pre {
-    font-family: source-code-pro, monospace;
+    font-family: 'Source Code Pro', monospace;
     font-size: 14px;
     margin-right: 40px;
 }
