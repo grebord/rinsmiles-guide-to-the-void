@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Installation - Rinsmiles´ Guide to the Void</title>
+	<link rel="stylesheet" type="text/css" href="/res/main.css">
+</head>
+<body>
+<div class="contenido">
+<header>
+<div class="leftbanner">
+<div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
+<div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
+</div>
+<img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-20px;">
+<h1>Rinsmiles´ Guide to the Void</h1>
+<h3>Version 2021.02</h3>
+</header>
+<br>
+<nav>
+<a href="index.html">Home</a>
+<a href="install.html">Installation</a>
+<a href="system.html">System Components and Management</a>
+<a href="power.html">Power saving and performance</a>
+<a href="appendix.html">Appendix</a>
+</nav>
+<br>
+<section>
+<h1>Installation</h1>
+
+<h3>0. Boot a base live image of Void and login as root.</h3>
+
+<hr>
+<h3>1. Set keyboard layout and desired font</h3>
+<dl>
+<dt>The default keyboard layout is <span class="fijo">us</span>, and the default small font is <span class="fijo">default8x16</span>.</dt>
+<dd class="texto">Available layouts are located in <span class="fijo">/usr/share/kbd/keymaps/</span>. You can set one with <b>loadkeys.</b></dd>
+<dd class="texto">Console fonts reside in <span class="fijo">/usr/share/kbd/consolefonts/</span>. You can set one with <b>setfont.</b></dd>
+</dl>
+
+<hr>
+<h3>2. Set up filesystems</h3>
+<p>You will minimally need to set up a <u>root partition</u>, and an <u>EFI system partition</u> (ESP) under UEFI.</p>
+<p>a) Identify the block devices to manage—you can list them with <b>lsblk</b>.
+<ul>
+<li>If you already have an ESP on the target device and want to preserve it (for example, when dual-booting with a different OS on the same drive) you could use it as Void’s ESP as well.</li>
+<li>If you are re-purposing a whole drive, you can wipe all signatures from the device with the <b>wipefs</b> command.</li>
+</ul>
+</p>
+<p>b) Create, as needed, a new partition table and the required partitions with <b>fdisk</b>.
+<ul>
+<li>If wishing to use hibernation, create a <i>swap</i> partition as well.</li>
+<li>The ESP should be at least 200MB in size to allow for multiple kernel installs. Make sure to set the partition type of the ESP accordingly (typically named “EFI System”).</li>
+<li><span class="fijo">fdisk</span> handles partition alignment automatically.</li>
+</ul>
+</p>
+<p>c) Format the created partitions with <b>mkfs</b>.
+<ul>
+<li><i>mkfs.vfat, mkfs.ext4</i> and <i>mkfs.btrfs</i> are some filesystem specific frontends for this purpose.</li>
+<li>For most UEFI implementations the ESP must be formatted as FAT. The appropriate FAT type (FAT16, FAT32) is determined automatically by <span class="fijo">mkfs.vfat</span>.</li>
+</ul>
+</p>
+<p>d) Finally, <b>mount</b> the created partitions—you can mount the root partition to <span class="fijo">/mnt/</span>, create the directory <span class="fijo">/mnt/boot</span>, and then mount the ESP to such directory.</p>
+
+<hr>
+<h3>3. Connect to the internet</h3>
+<dl>
+<dt>If you are on a <u>wired network</u>, you will likely already be connected to the internet. Verify this with a tool like <span class="fijo">ping</span>, for example (hitting Ctrl+C to interrupt it):</dt>
+<dd># ping voidlinux.org</dd>
+</dl>
+<dl>
+<p>If you are on a <u>wireless network</u>, the connection will have to be configured:</p>
+<dt>i) Make sure the interface is not hard or soft blocked. Do the latter using <b>rfkill</b>:</dt>
+<dd># rfkill unblock wlan</dd>
+<dt>ii) Check that the wireless interface is listed with the <b>ip link</b> command, then set it up:</dt>
+<dd># ip link set ❬wireless_interface❭ up</dd>
+<dt>iii) Configure the wireless network using <b>wpa_supplicant</b>:</dt>
+<dd># wpa_passphrase ❬ssid❭ ❬passphrase❭ >> /etc/wpa_supplicant/wpa_supplicant.conf</dd>
+<dd># wpa_supplicant -B -i ❬wireless_interface❭  -c /etc/wpa_supplicant/wpa_supplicant.conf</dd>
+<dt>iv) Disable <b>dhcpcd</b>'s Link-local IPv4 addressing and issue an interface rebind:</dt>
+<dd># echo 'noipv4ll' >> /etc/dhcpcd.conf</dd>
+<dd># dhcpcd -n</dd>
+</dl>
+
+<hr>
+<h3>4. Install Void on the mounted filesystem</h3>
+<p>Set up the parameters that <b>xbps-install</b> will use to install the new system:</p>
+<dl>
+<dt>a) Define your preferred main repository mirror from which to download the packages, e.g:</dt>
+<dd># REPO=https://alpha.us.repo.voidlinux.org/current</dd>
+<dt>Define any other repositories you need—e.g. the non-free repo, for proprietary firmware:</dt>
+<dd># REPONF=https://alpha.us.repo.voidlinux.org/current/nonfree</dd>
+<dt>b) Set the architecture and C standard library implementation flavor to install, e.g:
+<dd># ARCH=x86_64</dd>
+<dt>c) Select the packages to install. It can be as simple as installing the <span class="fijo">base-system</span> and <span class="fijo">efibootmgr</span> packages, or something more selective, such as:</dt>
+<dd class="texto">
+<dl>
+<dt class="dentro">Basic components, including base files, XBPS, runit, shell, kernel, firmware and other core utilities and libraries:</dt>
+<dd># PACKS='base-minimal linux kbd file ncurses libgcc libstdc++</dd>
+<dt>… essential services to manage input, device and time-based events:</dt>
+<dd>> acpid eudev snooze</dd>
+<dt>… along with our selected filesystems’ tools:</dt>
+<dd>> dosfstools e2fsprogs (btrfs-progs)</dd>
+<dt>… utilities to query and configure boot entries and system bus devices:</dt>
+<dd>> efibootmgr pciutils (usbutils)</dd>
+<dt>… those you need to set up networking:</dt>
+<dd>> iproute2 dhcpcd (iwd|wpa_supplicant)</dd>
+<dt>… documentation and utilities to access it:</dt>
+<dd>> mdocml man-pages void-docs</dd>
+<dt>… any extra firmware you need, if using the non-free repo enabling it for the new install:</dt>
+<dd>> (intel-ucode void-repo-nonfree)</dd>
+<dt>… and any additional software you may want to initially install, like an application to easily edit text files and utilities to test network connectivity:</dt>
+<dd>> nano mtr'</dd>
+</dl>
+</dd>
+<p><i>Note: AMD device firmware is already included in the kernel meta-package. Microcode updates are applied automatically once configured by XBPS.</i></p>
+<dt>d) Issue the installation of the packages to the new root partition mount (here <span class="fijo">/mnt</span>):</dt>
+<dd># XBPS_ARCH=$ARCH xbps-install -S -r /mnt -R "$REPO" \</dd>
+<dt>… optionally:</dd>
+<dd>> -R "$REPONF" \</dd>
+<dt>… then:</dd>
+<dd>> $PACKS</dd>
+</dl>
+
+<hr>
+<h3>5. Chroot into the newly installed system</h3>
+<dl>
+<dt>a) Mount the pseudo-filesystems needed for a chroot:</dt>
+<dd># mount --rbind /sys /mnt/sys   && mount --make-rslave /mnt/sys</dd>
+<dd># mount --rbind /dev /mnt/dev   && mount --make-rslave /mnt/dev</dd>
+<dd># mount --rbind /proc /mnt/proc && mount --make-rslave /mnt/proc</dd>
+<dt>b) Copy the DNS configuration into the new root in case more packages are to be downloaded:</dt>
+<dd># cat /etc/resolv.conf > /mnt/etc/resolv.conf</dd>
+<dt>c) And <b>chroot</b> to the new installation:</dt>
+<dd># chroot /mnt/</dd>
+</dl>
+<p>Note: Having installed <b>void-docs</b> on the new system, you can now access Void’s documentation directly using that command with the option ”-r“, which displays items as regular man pages.</p>
+
+<hr>
+<h3>6. Configure the basics</h3>
+<dl>
+<dt>a) Set the system’s hostname:</dt>
+<dd># echo ❬system_hostname❭ > /etc/hostname</dd>
+<dt>b) Edit <span class="fijo">/etc/rc.conf</span> with your text editor of choice, setting the system’s time settings and the console’s default keyboard layout and fonts.</dt>
+<dt>c) If installing a glibc distribution, uncomment desired locales in <span class="fijo">/etc/default/libc-locales</span> and generate locale files by reconfiguring the <span class="fijo">glibc-locales</span> package:</dt>
+<dd># xbps-reconfigure -f glibc-locales</dd>
+<dt>You can then set specific locale options in <span class="fijo">/etc/locale.conf</span>, as displayed by <b>locale</b>.</dt>
+<dt>d) Set the root password:</dt>
+<dd># passwd</dd>
+<dt>e) Configure <span class="fijo">fstab</span>. This can be as simple as adding entries for the root and ESP partitions to the existing file, setting the appropriate parameters for each. You can look up current mount information in /proc/mounts or by using <b>findmnt</b>:</dt>
+<dd># findmnt -kl -o SOURCE,UUID,TARGET,FSTYPE,OPTIONS --real</dd>
+<dt>For example, the file may result like so:<dt>
+<dd><pre>
+/etc/fstab
+<hr>
+# &lt;file system&gt;  	&lt;dir&gt;  		&lt;type&gt;		&lt;options&gt; 			&lt;dump&gt;&lt;pass&gt;
+# /dev/sda2
+UUID=a1b2(...)		/		ext4		defaults			0	1
+# /dev/sda1
+UUID=9Z8Y(...)		/boot		vfat		defaults,umask=022,utf8		0	2
+# /tmp tmpfs
+tmpfs 	       		/tmp		tmpfs		defaults,nosuid,nodev 		0	0
+<hr>
+</pre></dd>
+<dt>f) If you used another mirror in place of the default one for installation, add that to your XBPS configuration by overriding the corresponding system configuration file—e.g:</dt>
+<dd># echo 'repository=https://alpha.us.repo.voidlinux.org/current' > \</dd>
+<dd>> /etc/xbps.d/00-repository-main.conf</dd>
+<dt>The corresponding name of the non-free repo system file is <span class="fijo">10-repository-nonfree.conf</span>.</dt>
+<dt>g) If you had to unblock wireless interfaces with <span class="fijo">rfkill</span> previously, add the command to <span class="fijo">/etc/rc.local</span> to do this automatically on system initialization, before services are executed:</dt>
+<dd># echo 'rfkill unblock wlan' >> /etc/rc.local</dd>
+</dl>
+
+<hr>
+<h3>7. Set up swap</h3>
+<p>Setting up swap is required if you will use hibernation, and necessary on systems with low to moderate amounts of physical memory (and otherwise simply prudent).<br>
+If you have created a swap partition, start in step <b>d</b> below replacing "/swap" with your swap partition (prefer UUID for the fstab entry). Or else, set up a swap file going through the following steps:</p>
+<dl>
+<dt>a) If not using <i>btrfs</i>, jump to step <b>b</b>. For btrfs filesystems there is some prior setup to be done:</dt>
+<dd class="texto">
+<dl>
+<dt class="dentro">i) First create a zero length file:</dt>
+<dd># truncate -s 0 /swap</dd>
+<dt>ii) Then disable COW (copy-on-write) on it:</dt>
+<dd># chattr +C /swap</dd>
+<dt>iii) And make sure compression is disabled:</dt>
+<dd># btrfs property set /swap compression none</dd>
+</dl>
+</dd>
+<dt>b) Allocate the swap file, replacing <span class="fijo">❬count❭</span> with the number of MB you wish swap to have:</dt>
+<dd># dd if=/dev/zero of=/swap bs=1MiB count=❬count❭</dd>
+<dt>c) Set the appropriate permissions to it—it should only be accessible to priviliged processes:</dt>
+<dd># chmod 600 /swap</dd>
+<dt>d) Set up a Linux swap area on the file:</dt>
+<dd># mkswap /swap</dd>
+<dt>e) Finally, add an entry for it in fstab:</dt>
+<dd># echo '/swap none swap sw 0 0' >> /etc/fstab</dd>
+
+<hr>
+<h3>8. Make the new installation bootable</h3>
+<p>You can <u>boot the kernel directly</u> as an EFI executable or <u>use a separate bootloader</u>.</p>
+<dl>
+<dt>To set up the bootloader GRUB, consult the Void documentation with the <b>void-docs</b> command:</dt>
+<dd># void-docs -r chroot</dd>
+<dt class="dentro">Note: Many UEFI implementations allow choosing boot entries on startup, which may make using a separate bootloader/manager for multi-booting superfluous.</dt>
+</dl>
+<p>To load the kernel directly as an EFI executable, use <b>efibootmgr</b>:</p>
+<dl>
+<dt>i) Go through the options in <span class="fijo">/etc/default/efibootmgr-kernel-hook</span>, enabling modification of EFI entries so that a boot entry is automatically generated on kernel package reconfiguration.</dt>
+<dd class="texto">•&ensp;<span class="fijo">OPTIONS</span> needs to supply the root partition, in the form ”<span class="fijo">root=UUID=a1b2(...)</span>“. You can use <span class="fijo">blkid</span> or <span class="fijo">lslbk</span> to add the UUID string to the file. Common kernel parameters to add here are ”<span class="fijo">resume=❬swap_partition❭</span>“ if using hibernation and ”<span class="fijo">quiet</span>“ if wishing to see fewer log messages during system startup.</dd>
+<dd class="texto">•&ensp;<span class="fijo">DISK + PART</span> point to the ESP. Due to a potential issue with block device name persistence (where a device <i>sdX</i> may later on surface as <i>sdY</i>) set the <span class="fijo">DISK</span> parameter dynamically using <span class="fijo">findmnt</span>, where <span class="fijo">❬ESP_dir❭</span> below is your ESP mount directory (e.g. <span class="fijo">/boot</span>):
+<span class="fijo">DISK="$(findmnt -enrs -o SOURCE -M ❬ESP_dir❭ | cut -c -8)"</span></dd>
+<dd class="texto">Note that for NVMe drives, the device name will have to be formatted differently.</dd>
+<dt>ii) Add an entry for the system's <i>efivars</i> to fstab, and mount them manually so that the boot entry can be generated in the next step:</dt>
+<dd># echo 'efivarfs /sys/firmware/efi/efivars efivarfs defaults 0 0' >> /etc/fstab</dd>
+<dd># mount efivarfs</dd>
+</dl>
+
+<hr>
+<h3>9. Reconfigure and reboot</h3>
+<dl>
+<dt>Use <b>xbps-reconfigure</b> to ensure all installed packages are set up properly:</dt>
+<dd># xbps-reconfigure -fa</dd>
+<dt>This also generates a boot entry for the new installation. Review the generated boot configuration with the <span class="fijo">efibootmgr</span> command, as you may need to update the boot order on first install.<dt>
+</dl>
+<p>At this point, the installation is complete. <span class="fijo">exit</span> the chroot, unmount or sync the new filesystems manually to be sure no writes are pending, and reboot the computer with “<span class="fijo">shutdown -r now</span>”.</p>
+</section>
+<br>
+<nav>
+<a href="index.html">Home</a>
+<a href="install.html">Installation</a>
+<a href="system.html">System Components and Management</a>
+<a href="power.html">Power saving and performance</a>
+<a href="appendix.html">Appendix</a>
+</nav>
+<br>
+<footer>
+<p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
+<p>Contact: german.rebord@live.com</p>
+</footer>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Installation - Rinsmiles´ Guide to the Void</title>
+	<link rel="stylesheet" type="text/css" href="/res/main.css">
+</head>
+<body>
+<div class="contenido">
+<header>
+<div class="leftbanner">
+<div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
+<div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
+</div>
+<img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-20px;">
+<h1>Rinsmiles´ Guide to the Void</h1>
+<h3>Version 2021.02</h3>
+</header>
+<br>
+<nav>
+<a href="index.html">Home</a>
+<a href="install.html">Installation</a>
+<a href="system.html">System Components and Management</a>
+<a href="power.html">Power saving and performance</a>
+<a href="appendix.html">Appendix</a>
+</nav>
+<br>
+<section>
+<h1>APPENDIX</h1>
+<p>Files in the Appendix should simply be copied to their corresponding system directories. Make sure that all files are readable, and additionally that all scripts are executable.</p>
+<p>The scripts are made for <b>dash</b> (Debian Almquist shell), so they should be quite compatible.</p>
+<p><u>WARNING:</u> The scripts in the Power Management section below need testing. They should be safe to try, but take a look at them prior to use.</p>
+
+<h3>POWER MANAGEMENT</h3>
+<br>
+
+<pre>
+/etc/acpi/events/ac_adapter
+<hr>
+# Change power mode on power source transition
+event=ac_adapter
+action=/etc/acpi/handlers/power-ctl %e
+<hr>
+</pre>
+<br>
+
+<pre>
+/etc/acpi/handlers/power-ctl
+<hr>
+<?php include('power-ctl'); ?>
+<hr>
+</pre>
+<br>
+
+<pre>
+/etc/acpi/resources/laptop_mode
+<hr>
+<?php include('laptop_mode'); ?>
+<hr>
+</pre>
+<br>
+
+<h3>VOLUME AND BACKLIGHT</h3>
+<br>
+
+<pre>
+/etc/acpi/events/video-brightnessup
+<hr>
+# Increase screen brightness through dedicated script
+event=video/brightnessup
+action=/etc/acpi/handlers/backlight-ctl.sh up
+<hr>
+</pre>
+<br>
+
+<pre>
+/etc/acpi/events/video-brightnessdown
+<hr>
+# Decrease screen brightness through dedicated script
+event=video/brightnessdown
+action=/etc/acpi/handlers/backlight-ctl.sh down
+<hr>
+</pre>
+<br>
+
+<pre>
+/etc/acpi/handlers/backlight-ctl.sh
+<hr>
+<?php include('backlight-ctl.sh'); ?>
+<hr>
+</pre>
+<br>
+
+<pre>
+/etc/acpi/events/button-volumeup
+<hr>
+# Raise Master volume of default ALSA device
+event=button/volumeup
+action=/usr/bin/amixer set Master 5%%+
+<hr>
+</pre>
+<br>
+
+<pre>
+/etc/acpi/events/button-volumedown
+<hr>
+# Lower Master volume of default ALSA device
+event=button/volumedown
+action=/usr/bin/amixer set Master 5%%-
+<hr>
+</pre>
+<br>
+
+<pre>
+/etc/acpi/events/button-volumemute
+<hr>
+# Toggle Master volume of default ALSA device
+event=button/mute
+action=/usr/bin/amixer set Master toggle
+<hr>
+</pre>
+<br>
+</section>
+<br>
+<nav>
+<a href="index.html">Home</a>
+<a href="install.html">Installation</a>
+<a href="system.html">System Components and Management</a>
+<a href="power.html">Power saving and performance</a>
+<a href="appendix.html">Appendix</a>
+</nav>
+<br>
+<footer>
+<p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
+<p>Contact: german.rebord@live.com</p>
+</footer>
+</div>
+</body>
+</html>
+

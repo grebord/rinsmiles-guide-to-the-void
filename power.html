@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Installation - Rinsmiles´ Guide to the Void</title>
+	<link rel="stylesheet" type="text/css" href="/res/main.css">
+</head>
+<body>
+<div class="contenido">
+<header>
+<div class="leftbanner">
+<div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
+<div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
+</div>
+<img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-20px;">
+<h1>Rinsmiles´ Guide to the Void</h1>
+<h3>Version 2021.02</h3>
+</header>
+<br>
+<nav>
+<a href="index.html">Home</a>
+<a href="install.html">Installation</a>
+<a href="system.html">System Components and Management</a>
+<a href="power.html">Power saving and performance</a>
+<a href="appendix.html">Appendix</a>
+</nav>
+<br>
+<section>
+<h1>Power Saving and Performance</h1>
+
+<p>Configuration in this section is presented to be applied <i>statically</i>, not dependent on the system’s power source or a global ‘power mode’, while the “Power profiles” subsection describes how it can be applied dynamically and files for such purpose are provided in the Appendix. Each item is succinctly described—the user is expected to read further about them elsewhere if required.</p>
+
+<p>An excellent aid in the configuration of power saving is the tool <span class="fijo">powertop</span>, which can generate system power reports and show real time power draw data. While being primarily a diagnostics tool, it also has an “auto-tune” option which can automatically set a good deal of the tunables below—however, note that such automatic configuration is not persistent and not meant to replace a custom-tailored one.</p>
+
+<p><i>Indeed widely, I suggest avoiding tools that do intend to provide automatic power configuration. Understanding and tailoring the configuration for one’s hardware and its use will result in a more reliable, efficient and better performing system—and it can be quite simple, as today most power management aspects are already handled smartly by your firmware, drivers, kernel and distro.</i></p>
+
+<h3>Laptop mode</h3>
+
+<p>If you are using a laptop and running the OS from a hard drive (i.e, not an SSD, etc), you can use the “laptop mode” kernel feature as a power saving technique, which aims to keep the OS’s hard drive in suspension as much as possible. An implementation of this feature can be found in the Appendix, which requires that you disable <i>access timestamps</i> as described below, and that you do not enable <i>block layer rpm</i> on your main hard drive, as it uses <span class="fijo">hdparm</span> for drive suspension.</p>
+
+<h3>Lockup detectors</h3>
+
+<p>Turning off the kernel’s lockup detectors can decrease power consumption, as these are active high-priority tasks and, particularly, the hardlockup detector may generate a high number of interrupts on some systems. These detectors are used for debugging, and are generally dispensable to PC users. To do this, add the “<span class="fijo">nowatchdog</span>” option to your kernel parameters in your <span class="fijo">efibootmgr</span> hook or bootloader configuration.</p>
+
+<h3>PCI and SCSI bus devices</h3>
+
+<p><u>PCI RPM:</u> PCI devices can be put in a low-power state when idle through automatic Runtime Power Management to save power. The caveat is that some devices may not become active again after entering such state. To handle this, identify the Vendor and Device IDs of any device that fails to wake up with "<span class="fijo">lspci -nn</span>" and add them to a blacklist, so that those remain active throughout.</p>
+
+<p><u>Block Layer RPM:</u> Similarly, block devices may use runtime power management to access low-power states. This time a timeout needs to be set, at which point the device will flush the cache and go into suspension. Note that using it with frequently accessed hard drives could result in high latencies and component wear-down if the power state transitions are over-frequent. A whitelist may thus be preferred, where drives can be identified by their <i>World Wide Identifier</i> (see <span class="fijo">/sys/bus/scsi/devices/*:*:*:*/wwid</span>) to be selected and assigned specific timeouts.</p>
+
+<p><u>SATA LPM:</u> Further power savings can be achieved by using a medium power SATA Link Power Management setting, allowing devices to enter lower power states. The recommended option for modern systems is “med_power_with_dipm”, which works together with the devices’ own power configuration, otherwise being regular “medium_power”. The default is “max_performance”.
+<i>Note: While reportedly rare, using medium LPM settings (with some older drives) could result in data corruption. There is a “min_power” mode as well, but using it is strongly discouraged due to the risk of data loss, and using Device Initiated PM already results in similar power savings.</i></p>
+
+<p><u>Readahead:</u> Increasing file data readahead for hard drive devices can substantially increase I/O throughput with minimal latency penalties, and it can also benefit solid state drives to a more moderate degree. The default (software) readahead is 128kB, which can be safely doubled on modern systems, while more memory or I/O constrained systems should keep the default value.</p>
+
+<p><u>Scheduler:</u> I/O performance can be increased by using the appropriate I/O scheduler for your hardware and workloads. Generally, you can improve performance and reduce latency by using the "mq-deadline" scheduler on SSDs and the (default low latency) "bfq" scheduler on HDDs. However, NVMe drive performance benefits from setting no scheduler at all, i.e. “none”.</p>
+
+<p>To apply these settings use a set of <b>udev</b> rules applying desired values, for example:</p>
+<pre>
+/etc/udev/rules.d/91-power-and-performance.rules
+<hr>
+# schedulers
+SUBSYSTEM=="block", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", \
+	ATTR{queue/scheduler}="mq-deadline"
+SUBSYSTEM=="block", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", \
+	ATTR{queue/scheduler}="bfq"
+# readahead
+SUBSYSTEM=="block", KERNEL=="sd[a-z]", ATTR{queue/read_ahead_kb}="256"
+# SATA LPM
+SUBSYSTEM=="scsi_host", KERNEL=="host*", \
+	ATTR{link_power_management_policy}="med_power_with_dipm"
+# Block Layer RPM - using whitelist
+SUBSYSTEM=="scsi", ATTR{wwid}=="exact very long world wide identifier", \
+	ATTR{power/autosuspend_delay_ms}="300000", ATTR{power/control}="auto"
+# PCI RPM - using blacklist
+SUBSYSTEM=="pci", ATTR{vendor}=="0x0a1b", ATTR{device}=="0x2c3d", \
+	GOTO="pci_rpm_end"
+SUBSYSTEM=="pci", ATTR{power/control}="auto"
+LABEL="pci_rpm_end"
+<hr>
+</pre>
+<h3>HDD Advanced Power Management</h3>
+
+<p>Among other parameters, you can set a hard drive’s Advanced Power Management (APM) feature with the tool <span class="fijo">hdparm</span>. Generally, it is best to set high APM levels to avoid excessive head parking and undesired spindown -which can cause heightened component wear-down when too frequent- while also not compromising the -much needed- drive’s performance. Power savings and wear reduction can be achieved by manually managing drive suspension, which may be done in different ways—e.g. the above-mentioned <i>Block Layer RPM</i> or tools like <i>hdparm</i>.</p>
+<p>Note that many drives do allow spindown with APM levels above 127, while they may ignore any manually set timeout with levels below 128. If unsure, try first levels 192, 128, 127, in that order, and add hdparm commands to <span class="fijo">/etc/rc.local</span> to apply them on system startup and to a script in <span class="fijo">/etc/zzz.d/resume/</span> to retain them after a system suspend.</p>
+
+<h3>Filesystems and virtual memory</h3>
+
+<p><u>Access timestamps:</u> Using the <span class="fijo">noatime</span> mount option disables inode access time updates on a filesystem, increasing performance and reducing drive access. You can set this in <span class="fijo">/etc/fstab</span> to your root and ESP partitions, and any other mount point you judge it pertinent.</p>
+
+<p><u>Data flushing:</u> To further reduce drive access you can increase the intervals after which the kernel will write old data to disk. This is by default done every 5 seconds for both data and journaling (on journaling filesystems like ext4) — you can tune it with the following:<br>
+&emsp;i) Journaling: Add the “<span class="fijo">commit=❬seconds❭</span>” option to your (ext4 or btrfs) filesystem's 	mount options in <span class="fijo">/etc/fstab</span>. E.g, 15 seconds.<br>
+&emsp;ii) Data: Add the “<span class="fijo">vm.dirty_writeback_centisecs = ❬centiseconds❭</span>” setting in a 	.conf file located in <span class="fijo">/etc/sysctl.d/</span> (see further below). E.g, 1500 centiseconds.</p>
+<pre>
+/etc/fstab
+<hr>
+# &lt;file system&gt;    &lt;dir&gt;  	&lt;type&gt;		&lt;options&gt; 			&lt;dump&gt;&lt;pass&gt;
+# /dev/sda2
+UUID=a1b2(...)	    /		ext4		defaults,noatime,commit=15         0    1
+# /dev/sda1
+UUID=9Z8Y(...)	    /boot	vfat		defaults,noatime,umask=022,utf8	   0    2
+(...)
+<hr>
+</pre>
+
+<p><u>Paging and cached data:</u> There are two main tuning knobs to consider here, <i>swappiness</i> and <i>virtual filesystem cache pressure</i>. The first one defines the rough relative I/O cost of swapping and filesystem paging, the other controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects.</p>
+<p>The default value of swappiness is 60 —decreasing the value will cause the kernel to disprefer swapping. The default value of cache pressure is 100 —decreasing the value will increase its preference to conserve cached data.
+On systems with high physical memory, you can use lower swappiness and cache pressure values, e.g. 15 and 65 respectively, by setting “<span class="fijo">vm.swappiness” and “<span class="fijo">vm.vfs_cache_pressure</span>” in a .conf file located in <span class="fijo">/etc/sysctl.d/</span>:</p>
+<pre>
+/etc/sysctl.d/91-df-vm.conf
+<hr>
+vm.dirty_writeback_centisecs = 1500
+vm.swappiness = 15
+vm.vfs_cache_pressure = 65
+<hr>
+</pre>
+
+<h3>Audio power save</h3>
+<p>For audio devices using the "snd_hda_intel" or "snd_ac97_codec" drivers, these can be set to turn off the codec power when the device has not been in use after a certain amount of time.
+Check the drivers your audio devices are using with “<span class="fijo">lspci -k</span>”, and set the “power_save” option with a timeout in seconds for such drivers in a .conf file located in <span class="fijo">/etc/modprobe.d</span>:</p>
+<pre>
+/etc/modprobe.d/91-audio-power-save.conf
+<hr>
+#options snd_ac97_codec power_save=5
+options snd_hda_intel power_save=5
+<hr>
+</pre>
+
+<h3>CPU frequency scaling</h3>
+<p>CPU frequencies are managed by the active <i>governor</i> for each core. Scaling governors set frequencies dynamically, providing great performance while not sacrificing efficiency. Situationally, however, non-scaling governorns may be preferred, like (cpufreq's) ‘powersave’ governor which sets frequencies statically to their lowest point for maximum power savings.</p>
+<p>Within <i>cpufreq</i>, the “schedutil” scaling governor is gradually turning to be the default, “best-of-all-worlds” one for general use, being closely integrated with the kernel. To set it -or any other governor you wish- at startup, add the following to your <span class="fijo">rc.local</span> file:</p>
+<pre>
+/etc/rc.local
+<hr>
+(...)
+for d in /sys/devices/system/cpu/cpufreq/policy[0-9]* ; do
+	echo 'schedutil' > "$d/scaling_governor"
+done
+(...)
+<hr>
+</pre>
+Note that, on modern Intel CPUs, you can use the Intel P-State driver which provides its own scaling governors when active, called ‘performance’ and ‘powersave’ (like cpufreq's non-scaling governors). Broadly, they still tend to perform better than “schedutil”, especially when raw performance is prioritized over power draw. If you wish to use them, set the governors’ status in <span class="fijo">/sys/devices/system/cpu/intel_pstate/</span> to “active” and then set a governor as above.
+
+<h3>Initial images</h3>
+<p>You can generate smaller initramfs boot images by directing <b>dracut</b> to install only what is needed for booting the local host, which can speed up startup times. This is usually safe, but you should always test it first conserving a generic boot image in case some module results to be missing. Additionally, you can use a different compressor or no compression at all for further tuning. E.g:</p>
+<pre>
+/etc/dracut.conf.d/90-boot-image-tuning.conf
+<hr>
+# generate host-specific boot image
+hostonly="yes"
+# we set kernel parameters elsewhere
+hostonly_cmdline="no"
+# having installed lz4, we can use it as a fast (de)compression alternative
+#compress="lz4"
+<hr>
+</pre>
+
+<h3>Power profiles</h3>
+<p>Some power and performance configuration needs to be <i>dynamic</i>: Laptop users will require that the system enter a power saving mode when running on battery, and desktop users may wish to trigger a (high power) minimal latency mode for timing-critical tasks, among other scenarios. Such cases can be easily managed with <span class="fijo">acpid</span>, by creating an event file that matches the event, like a power source transition or some sort of turbo button press, to a script that will set the desired configuration.</p>
+<p>When changing the configuration dynamically, kernel parameters should be set with the <b>sysctl</b> command, and parameters set above through <span class="fijo">udev</span> are (typically) accessible as writable files under the <span class="fijo">/sys</span> folder.</p>
+<p>Laptop users should set up power profiles dependent on the computer’s power source, usually involving HDD power management if running the OS from one, CPU frequency scaling, and any relevant GPU settings that their driver provides. All but the last one are tackled in the Appendix files, and the latter can easily be added to them. Do not forget you can check <span class="fijo">powertop</span>'s live data while setting it up, to identify any further configuration that may be needed.</p>
+
+<h3>What about...?</h3>
+
+<h4>Wakeup-on-Lan?</h4>
+<p>WOL appears to be disabled by default on Void. If you wish to set it, use the commands that powertop provides to toggle it, or use a <span class="fijo">udev</span> rule to -for example- match to the "net" subsystem and change the wakeup power setting on the devices (enabled/disabled).</p>
+
+<h4>USB autosuspend?</h4>
+<p>I find that its unreliability outweighs the meager benefit. Furthermore, a power-sensitive system like a laptop would be set to suspend before USB autosuspend could make an appreciable difference, as any connected USB devices will likely be used when the computer is active.</p>
+
+<h4>AHCI host controller PM?</h4>
+<p>Quite bug-prone on both my laptop and desktop, so I omitted it out of caution. Perhaps in a future version of this guide, if I can solve the problems, it will be featured. If you want to try it, use the commands that powertop provides and test, checking dmesg logs, after having saved and synced your data.</p>
+
+<h4>Active State Power Management?</h4>
+<p>This is normally handled by your BIOS.</p>
+</section>
+<br>
+<nav>
+<a href="index.html">Home</a>
+<a href="install.html">Installation</a>
+<a href="system.html">System Components and Management</a>
+<a href="power.html">Power saving and performance</a>
+<a href="appendix.html">Appendix</a>
+</nav>
+<br>
+<footer>
+<p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
+<p>Contact: german.rebord@live.com</p>
+</footer>
+</div>
+</body>
+</html>

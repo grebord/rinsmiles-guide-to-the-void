@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>System Management - Rinsmiles´ Guide to the Void</title>
+	<link rel="stylesheet" type="text/css" href="/res/main.css">
+</head>
+<body>
+<div class="contenido">
+<header>
+<div class="leftbanner">
+<div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
+<div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
+</div>
+<img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-20px;">
+<h1>Rinsmiles´ Guide to the Void</h1>
+<h3>Version 2021.02</h3>
+</header>
+<br>
+<nav>
+<a href="index.html">Home</a>
+<a href="install.html">Installation</a>
+<a href="system.html">System Components and Management</a>
+<a href="power.html">Power saving and performance</a>
+<a href="appendix.html">Appendix</a>
+</nav>
+<br>
+<section>
+<h1>System Components and Management</h1>
+
+<h3>Network</h3>
+<p>Do any necessary configuration to connect to the internet and persist it across boots. If not using static IPs you will minimally need to set up a <u>DHCP</u> client, and a <u>wireless daemon</u> if using Wi-Fi:</p>
+
+<p>For <u>DHCP</u> with <b>dhcpcd</b> or <b>ndhc</b>, you can simply copy and rename the service folder suffixing your network interface’s name, edit the run file to use such interface, and then enable the service.</p>
+
+<p>For <u>wireless connections</u>, enable the (potentially interface specific) <span class="fijo">wpa_supplicant</span> or <span class="fijo">iwd</span> services and use <b>wpa_cli</b> or <b>iwctl</b> respectively to easily set up a new connection. Note that <span class="fijo">iwd</span> can also be used as a DHCP client, and that it requires <span class="fijo">dbus</span> to be running.</p>
+
+<p>For <u>Domain Name Resolution</u> (DNS), you may use a separate application that provides security features and/or caching, like <span class="fijo">stubby</span> or <span class="fijo">unbound</span>, or use the nameservers already set up by your DHCP client, or simply add your preferred nameservers manually to <span class="fijo">/etc/resolv.conf.</span> Note that also, <span class="fijo">firefox</span> has built-in resolution capabilities using DNS-over-HTTPS and name caching.</p>
+
+<hr>
+<h3>Firewall</h3>
+<dl>
+<dt>You can manage the kernel firewall with <b>iptables</b>. For quick setup for IPv4 connections, apply the <span class="fijo">simple_firewall.rules</span> present in <span class="fijo">/etc/iptables/</span> with the <span class="fijo">iptables-restore ❬rules❭</span> command. See the Void docs for more details:</dt>
+<dd># void-docs -r firewall</dd>
+<dt><i>Tip: If using iptables, you should follow the “Simple stateful firewall” guide in the ArchWiki to generate a more elaborate rule set, and which has a description of what each rule does.</i></dt>
+</dl>
+
+<hr>
+<h3>Users</h3>
+<dl>
+<dt><u>a) Privilege elevation:</u> Once the system is fully set up, it is crucial to log in as a regular user for normal operation. To grant such regular users per-command privilege elevation you can use the tool <b>doas</b>, provided by the <span class="fijo">opendoas</span> package. Simply install the package and set it up to allow users of the group <i>wheel</i> to execute commands as <i>root</i> when issued with it:</dt>
+<dd># echo 'permit :wheel as root' > /etc/doas.conf</dd>
+<dt>A very common, yet more internally complex alternative is using sudo for this purpose.</dt>
+<dt><u>b) User defaults:</u> Default user creation parameters are set in <span class="fijo">/etc/default/useradd</span>. Modify the file, and those in <span class="fijo">/etc/skel/</span>, to provide the desired initial environment for new users.</dt>
+<dt><u>c) Adding users:</u> Add the aforementioned regular user (plus any others you may need) and then set their password. In addition to the <i>wheel</i> group, this user should be part of the <i>audio</i>, <i>input</i> and <i>video</i> groups to access audio and input devices and video hardware acceleration, among others:</dt>
+<dd># useradd -m -G audio,video,input,wheel ❬user_name❭</dd>
+<dd># passwd ❬user_name❭</dd>
+</dl>
+
+<hr>
+<h3>Audio</h3>
+<p>To set up audio, install the <span class="fijo">alsa-utils</span> package and use the <span class="fijo">alsamixer</span> tool to unmute channels and set the volume. If you see that your desired sound card is not set as default, find the card’s index number in <span class="fijo">/proc/asound/cards</span> and set it as the default in <span class="fijo">/etc/asound.conf:</span></p>
+<pre>
+/etc/asound.conf
+<hr>
+# Set default sound card
+defaults.ctl.card ❬card_index❭
+defaults.pcm.card ❬card_index❭
+defaults.hwdep.card ❬card_index❭
+defaults.timer.card ❬card_index❭
+<hr>
+</pre>
+<ul>
+Notes:
+<li>You may also, or instead, need to specify the default ALSA <i>device</i>, in the same way.</li>
+<li>If you use applications that require Pulseaudio, install it or the <span class="fijo">apulse</span> package.</li>
+<li>See the “Input and ACPI events” section for details on adjusting volume with hotkeys.</li>
+</ul>
+
+<hr>
+<h3>Display server</h3>
+<p>This section focuses on installing and configuring the Xorg display server with a window manager. You can follow the installation below and simply add or replace any drivers and components you need—for information on installing proprietary or vendor specific graphics drivers, access Void’s documentation with the <span class="fijo">void-docs</span> command, e.g: <span class="fijo"># void-docs -r nvidia</span></p>
+
+<h4>Installation</h4>
+<dl>
+<dt>Select the packages needed for a graphical session, including the X server, startup scripts, input and graphics drivers and the message bus system:</dt>
+<dd># PACKS='xorg-minimal mesa-dri dbus-x11</dd>
+<dt>… add bitmap and outline fonts (potentially some with extensive unicode support):</dt>
+<dd>> font-misc-misc dejavu-fonts-ttf (font-unifont-bdf noto-fonts-ttf)</dd>
+<dt>… and your preferred window manager, a tool to launch applications (which may be included with the former) and a terminal emulator—for example:</dt>
+<dd>> spectrwm dmenu st'</dd>
+<dt>Install the selected packages, making sure the repository index is synchronized and that the system is up-to-date:</dt>
+<dd># xbps-install -Su $PACKS</dd>
+</dl>
+
+<h4>Configuration</h4>
+<p><u>Keyboard layout:</u> To set the default keyboard layout(s) for Xorg, add an X configuration file that defines an input class setting the "XkbLayout" option to them:</p>
+<pre>
+/etc/X11/xorg.conf.d/91-keyboard-user.conf
+<hr>
+# Set keyboard layout
+Section "InputClass"
+	Identifier		"default keyboard layout"
+	MatchDriver 		"libinput"
+	MatchIsKeyboard		"on"
+	# Either set one layout:
+	Option "XkbLayout"	"❬layout❭"
+	# Or define more layouts to switch between, e.g.
+	# by pressing both Ctrl keys simultaneously:
+	#Option "XkbLayout"	"❬layout❭,❬layout_alt❭"
+	#Option "XkbOptions"	"grp:ctrls_toggle"
+EndSection
+<hr>
+</pre>
+To temporarily set other keyboard layouts on Xorg use the <b>setxkbmap</b> command, provided by the homonymous package.<br>
+<p><u>Touchpad tapping:</u> To enable tapping on touchpad devices, add an X configuration file that defines an input class setting the "Tapping" option to them:</p>
+<pre>
+/etc/X11/xorg.conf.d/91-touchpad-user.conf
+<hr>
+# Enable tapping
+Section "InputClass"
+	Identifier			"enable touchpad tapping"
+	MatchDriver 		"libinput"
+	MatchIsTouchpad 	"on"
+	Option "Tapping"	"on"
+EndSection
+<hr>
+</pre>
+<p><u>Graphics driver:</u> To specify the driver to use with a graphics device and its configuration, first find the BusID of the device with <b>lspci</b> (the first column) and format it accordingly—usually just prefixing it with "PCI:" and replacing the dot with a colon—then use it in an X configuration file specifying the desired driver along with any options, in the following format:</p>
+<pre>
+/etc/X11/xorg.conf.d/91-integrated-graphics.conf
+<hr>
+# DDX Intel Graphics driver configuration (from xf86-video-intel package)
+Section "Device"
+	# Some identifier
+	Identifier	"integrated graphics device"
+	# Driver to use with the device
+	Driver	"intel"
+	# BusID of the device in our PC
+	BusID		"PCI:00:02:0"
+	# Driver settings (optional)
+	# This one is driver specific, to prevent tearing without compositing
+	Option	"TearFree" "on"
+EndSection
+<hr>
+</pre>
+<p>Session timeouts: To set the screen locker and DPMS timeouts, set the BlankTime and OffTime options respectively in a server flags X configuration file:</p>
+<pre>
+/etc/X11/xorg.conf.d/91-server-flags.conf
+<hr>
+# Xorg server configuration
+Section "ServerFlags"
+	Option "BlankTime"	"❬minutes_blank❭"
+	Option "StandbyTime"	"0"
+	Option "SuspendTime"	"0"
+	Option "OffTime"	"❬minutes_off❭"
+EndSection
+<hr>
+</pre>
+<ul>
+Notes:
+<li>The distinction in Standby, Suspend and Off times is only meaningful for CRT monitors. Furthermore, screen blanking often triggers DPM activation in modern monitors.</li>
+<li>Use the tool <b>xss-lock</b> to run a screen locker (like slock) triggered by the Blank timeout.</li>
+</ul>
+
+<h4>Starting the X server</h4>
+<p>X is commonly started using the <b>startx</b> script, provided by the <span class="fijo">xinit</span> package, which handles the more complex aspects of setting up the server. To configure it, modify the <span class="fijo">xinitrc</span> script in <span class="fijo">/etc/X11/xinit/</span> to launch your desired application (like a window manager) when X starts, after doing any necessary setup - for example:</p>
+<pre>
+/etc/X11/xinit/xinitrc
+<hr>
+#!/bin/sh
+# start some nice programs - some applications put scripts there
+if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+ for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+  [ -x "$f" ] && . "$f"
+ done
+ unset f
+fi
+# apply per-user wallpaper - this uses ImageMagick
+display -background gray12 -backdrop -window root $HOME/Pictures/.wallpaper.*g
+# start locker daemon
+xss-lock slock &
+# start session
+dbus-launch --exit-with-x11 spectrwm
+<hr>
+</pre>
+The last line above sets up a session message bus and launches the window manager <i>spectrwm</i>. When the window manager quits, X will in turn exit which will cause the dbus daemon to notify clients of this (which ideally would clean up and quit in response) and then exit itself.
+<p>To start X automatically when logging in from a login shell, execute startx in <span class="fijo">/etc/profile</span>, which is read and executed by the login shell at such point, conditioning such execution on any parameters you require:</p>
+<pre>
+/etc/profile
+<hr>
+(...)
+# startx automatically when logging in on tty1 as a regular user
+if [ ! $DISPLAY ] && [ "$(tty)" = '/dev/tty1' ] && [ $(id -u) -ne 0 ]; then
+  exec startx
+fi
+<hr>
+</pre>
+Once you have tested your configuration to work, consider modifying the <span class="fijo">Xwrapper.config</span> file in <span class="fijo">/etc/X11/</span> to allow for auto-detection of required privileges to run the server, so that X itself may be run as a regular user rather than root (see Xorg.wrap(1)). This is a security improvement, but its availability depends on the graphics devices and drivers you use.
+<p>Note: The "exec" command above is desirable, as when the X server exits, the user will be logged out. This denies the ability of killing (or crashing) the X server to bypass locking or authentication mechanisms, and it does not prevent running Xorg root-less.</p>
+
+<hr>
+<h3>Input and ACPI events</h3>
+
+<p>To manage input and ACPI events you use <b>acpid</b>, a daemon which links such events to an action. It can be used to set volume and backlight levels on key presses, to react to power or battery related events, and much more. Generically, to trigger an action in response to an event:</p>
+<p>i) Use the tool <b>acpi_listen</b> to identify the event by triggering it.</p>
+<p>ii) Add an entry for the event to a file in <span class="fijo">/etc/acpi/events/</span>, and its associated handler script (if such is required) in <span class="fijo">/etc/acpi/handlers/</span>.</p>
+<p>iii) Restart the <span class="fijo">acpid</span> service.</p>
+<p>The script <span class="fijo">/etc/acpi/handler.sh</span> has preset actions for some ACPI events. Since its dynamic power management functionality will have to be implemented differently for one’s machine, and to maximize the modularity of the configuration, it is advisable to limit such script to handling system power states and then manage others with dedicated files:</p>
+<pre>
+/etc/acpi/events/anything
+<hr>
+# anything, that is one of these
+event=button/(power|sleep|lid)
+action=/etc/acpi/handler.sh %e
+<hr>
+</pre>
+<h4>Reboot, shutdown and suspend</h4>
+<p>To <u>reboot</u>, simply log out and hit Ctrl+Alt+Del on the login shell, which is set to send the appropriate signal to the OS.</p>
+To <u>shutdown</u> or <u>suspend</u> the system, use <span class="fijo">acpid</span> and <b>zzz</b>. Simply enable the <span class="fijo">acpid</span> service if you have not yet done so, and the following will already be configured for you:
+<ul>
+<li>Shutting down by pressing (but not holding) the power button on your PC. Make sure you have logged out of all sessions first, being dropped out to a login shell.</li>
+<li>Suspending by pressing the sleep button on your PC, or by closing a laptop’s lid.</li>
+</ul>
+<h4>Hibernation</h4>
+<p>After setting up an environment that allows for hibernation (with an appropriately sized swap partition and the corresponding kernel parameter), you can trigger it by issuing the "zzz -Z" command as a response to an event of your choosing through acpid.</p>
+<h4>Volume and backlight</h4>
+<p>Files to manage <u>volume</u> and <u>backlight</u> related input events through <span class="fijo">acpid</span> are provided in the Appendix.</p>
+<h4>Power and battery</h4>
+<p><u>Battery:</u> Some laptops send the appropriate signals the OS as a battery discharges, which you can handle with acpid. For others, you can query battery status and load with the <b>acpi</b> command, provided by the homonymous package, whenever another event occurs or on a timer (see next section).</p>
+<p><u>Power:</u> See the “Power profiles” subsection of the “Power saving and performance” section further below, and the relevant files in the Appendix.</p>
+
+<hr>
+<h3>Scheduled actions</h3>
+<p>To schedule the execution of commands you can use <b>snooze</b>, which has services already set up to run commands on an hourly, daily, weekly and monthly basis that you can enable. You can also use snooze to run a command at a particular time and date, or on different periods.</p>
+<p>The simplest way to use it is to enable a service for a particular run frequency, and drop executable scripts in its corresponding folder with the name ”<span class="fijo">chron.❬frequency❭</span>“ in <span class="fijo">/etc/</span> (which may have to be created).</p>
+<p>Among other things, scheduling can be used to automate system maintenance, updating backups, querying for information over the web, send notifications, etc. Common periodic actions most users will require are described below.</p>
+Notes:
+<ul>
+<li>You should minimally enable the <span class="fijo">snooze-daily</span> service, as daily scheduling is used for some system maintenance tasks.</li>
+<li>Consider installing the package <span class="fijo">PopCorn</span>, which provides a service that uses snooze as well and supplies the Void project with anonymous package statistics.</li>
+</ul>
+<h4>Network Time Synchronization</h4>
+<p>There are many ways to synchronize the system’s clock with that of a time server. A simple and effective one is using the SNTP Perl script from the site kloth.net:</p>
+
+<p>&emsp;i) Install <span class="fijo">perl</span> if you have not already. Apart from being handy, Perl is a dependency of a large amount of packages so it would likely be pulled as such at some point.</p>
+<p>&emsp;ii) Copy the script on the website to a file, commenting out the invocation of the “output_ntp_data” function (as suggested) near the bottom, to make it less verbose.</p>
+<p>&emsp;iii) Set is as executable, and drop it in <span class="fijo">/usr/local/bin/</span>.</p>
+<p>&emsp;iv) Add an entry in <span class="fijo">chron.weekly</span> so that <span class="fijo">snooze</span> may trigger its execution regularly:</p>
+<pre>
+/etc/chron.weekly/sntp-update
+<hr>
+#!/bin/sh
+/usr/bin/perl /usr/local/bin/sntp -u pool.ntp.org
+<hr>
+</pre>
+Notes:
+<ul>
+<li>By running the script without the "-u" option on a terminal, you can see the network time and its delta compared to your system’s time. Small deltas, &lt;1s, are expected, but even deltas of several seconds are usually not a problem.</li>
+<li>If accuracy is critical, or if your hardware clock tends to deviate substantially from the actual time, consider using an NTP daemon instead.</li>
+</ul>
+<h4>Filesystem TRIM</h4>
+<p>Filesystems on SSD drives should be subject to <i>trimming</i> periodically to maintain drive performance and health. For this, use the tool <span class="fijo">fstrim</span> provided by the <span class="fijo">util-linux</span> package, itself a dependency of the <span class="fijo">base-minimal</span> meta-package.</p>
+<p>To trim all supported filesystems listed in <span class="fijo">fstab</span> weekly, use the following:</p>
+<pre>
+/etc/chron.weekly/fstrim-fstab
+<hr>
+#!/bin/sh
+/usr/bin/fstrim -A
+<hr>
+</pre>
+<i>Tip: That above is periodic trim. Do not use continuous trim -the “discard” mount option or flag- unless you have a solid understanding of its purpose and how it would affect your drive.</i>
+</section>
+<br>
+<nav>
+<a href="index.html">Home</a>
+<a href="install.html">Installation</a>
+<a href="system.html">System Components and Management</a>
+<a href="power.html">Power saving and performance</a>
+<a href="appendix.html">Appendix</a>
+</nav>
+<br>
+<footer>
+<p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
+<p>Contact: german.rebord@live.com</p>
+</footer>
+</div>
+</body>
+</html>
