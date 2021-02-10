@@ -1,37 +1,15 @@
 ## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/grebord/rinsmiles-guide-to-the-void/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+rinsmiles´ Guide to the Void is a guide for installing and setting up a Void operating system:
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+voidlinux.org
 
-### Markdown
+It mainly, and merely intends to guide the user through the steps, providing hints and examples along the way, and it is complemented by the official Void documentation.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+The installation is performed from the ground up, by bootstrapping the new system with the XBPS package manager from a console. After following through with this guide, the user will have a fully configured, reliable, performant and fundamental system which they can then tune and extend to their requirements.
 
-```markdown
-Syntax highlighted code block
+This guide assumes that the user is familiar with the use of a shell, core utilities and GNU/Linux operating systems, and that they will take a look at specific documentation of any tool and feature with which they are not.
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/grebord/rinsmiles-guide-to-the-void/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit
+https://creativecommons.org/licenses/by/4.0 
