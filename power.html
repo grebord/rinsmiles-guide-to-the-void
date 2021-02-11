@@ -4,26 +4,30 @@
 	<title>Installation - Rinsmiles´ Guide to the Void</title>
 	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
+
 <body>
 <div class="contenido">
+
 <header>
-<div class="leftbanner">
-<div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
-<div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
-</div>
-<img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-20px;">
-<h1>Rinsmiles´ Guide to the Void</h1>
-<h3>Version 2021.02</h3>
+    <div class="leftbanner">
+        <div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
+        <div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
+    </div>
+    <img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-20px;">
+    <h1>Rinsmiles´ Guide to the Void</h1>
+    <h3>Version 2021.02</h3>
 </header>
+
 <br>
 <nav>
-<a href="index.html">Home</a>
-<a href="install.html">Installation</a>
-<a href="system.html">System Components and Management</a>
-<a href="power.html">Power saving and performance</a>
-<a href="appendix.html">Appendix</a>
+    <a href="index.html">Home</a>
+    <a href="install.html">Installation</a>
+    <a href="system.html">System Components and Management</a>
+    <a href="power.html">Power saving and performance</a>
+    <a href="appendix.html">Appendix</a>
 </nav>
 <br>
+
 <section>
 <h1>Power Saving and Performance</h1>
 
@@ -104,7 +108,7 @@ UUID=9Z8Y(...)	    /boot	vfat		defaults,noatime,umask=022,utf8	   0    2
 
 <p><u>Paging and cached data:</u> There are two main tuning knobs to consider here, <i>swappiness</i> and <i>virtual filesystem cache pressure</i>. The first one defines the rough relative I/O cost of swapping and filesystem paging, the other controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects.</p>
 <p>The default value of swappiness is 60 —decreasing the value will cause the kernel to disprefer swapping. The default value of cache pressure is 100 —decreasing the value will increase its preference to conserve cached data.
-On systems with high physical memory, you can use lower swappiness and cache pressure values, e.g. 15 and 65 respectively, by setting “<span class="fijo">vm.swappiness” and “<span class="fijo">vm.vfs_cache_pressure</span>” in a .conf file located in <span class="fijo">/etc/sysctl.d/</span>:</p>
+On systems with high physical memory, you can use lower swappiness and cache pressure values, e.g. 15 and 65 respectively, by setting “<span class="fijo">vm.swappiness</span>” and “<span class="fijo">vm.vfs_cache_pressure</span>” in a .conf file located in <span class="fijo">/etc/sysctl.d/</span>:</p>
 <pre>
 /etc/sysctl.d/91-df-vm.conf
 <hr>
@@ -173,18 +177,20 @@ hostonly_cmdline="no"
 <h4>Active State Power Management?</h4>
 <p>This is normally handled by your BIOS.</p>
 </section>
+
 <br>
 <nav>
-<a href="index.html">Home</a>
-<a href="install.html">Installation</a>
-<a href="system.html">System Components and Management</a>
-<a href="power.html">Power saving and performance</a>
-<a href="appendix.html">Appendix</a>
+    <a href="index.html">Home</a>
+    <a href="install.html">Installation</a>
+    <a href="system.html">System Components and Management</a>
+    <a href="power.html">Power saving and performance</a>
+    <a href="appendix.html">Appendix</a>
 </nav>
 <br>
+
 <footer>
-<p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
-<p>Contact: german.rebord@live.com</p>
+    <p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
+    <p>Contact: german.rebord@live.com</p>
 </footer>
 </div>
 </body>
