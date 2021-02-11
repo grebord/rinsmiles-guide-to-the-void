@@ -4,26 +4,30 @@
 	<title>System Management - Rinsmiles´ Guide to the Void</title>
 	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
+
 <body>
 <div class="contenido">
+
 <header>
-<div class="leftbanner">
-<div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
-<div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
-</div>
-<img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-20px;">
-<h1>Rinsmiles´ Guide to the Void</h1>
-<h3>Version 2021.02</h3>
+    <div class="leftbanner">
+        <div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
+        <div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
+    </div>
+    <img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-20px;">
+    <h1>Rinsmiles´ Guide to the Void</h1>
+    <h3>Version 2021.02</h3>
 </header>
+
 <br>
 <nav>
-<a href="index.html">Home</a>
-<a href="install.html">Installation</a>
-<a href="system.html">System Components and Management</a>
-<a href="power.html">Power saving and performance</a>
-<a href="appendix.html">Appendix</a>
+    <a href="index.html">Home</a>
+    <a href="install.html">Installation</a>
+    <a href="system.html">System Components and Management</a>
+    <a href="power.html">Power saving and performance</a>
+    <a href="appendix.html">Appendix</a>
 </nav>
 <br>
+
 <section>
 <h1>System Components and Management</h1>
 
@@ -39,21 +43,21 @@
 <hr>
 <h3>Firewall</h3>
 <dl>
-<dt>You can manage the kernel firewall with <b>iptables</b>. For quick setup for IPv4 connections, apply the <span class="fijo">simple_firewall.rules</span> present in <span class="fijo">/etc/iptables/</span> with the <span class="fijo">iptables-restore ❬rules❭</span> command. See the Void docs for more details:</dt>
-<dd># void-docs -r firewall</dd>
-<dt><i>Tip: If using iptables, you should follow the “Simple stateful firewall” guide in the ArchWiki to generate a more elaborate rule set, and which has a description of what each rule does.</i></dt>
+    <dt>You can manage the kernel firewall with <b>iptables</b>. For quick setup for IPv4 connections, apply the <span class="fijo">simple_firewall.rules</span> present in <span class="fijo">/etc/iptables/</span> with the <span class="fijo">iptables-restore ❬rules❭</span> command. See the Void docs for more details:</dt>
+    <dd># void-docs -r firewall</dd>
+    <dd class="texto"><i>Tip: If using iptables, you should follow the “Simple stateful firewall” guide in the ArchWiki to generate a more elaborate rule set, and which has a description of what each rule does.</i></dd>
 </dl>
 
 <hr>
 <h3>Users</h3>
 <dl>
-<dt><u>a) Privilege elevation:</u> Once the system is fully set up, it is crucial to log in as a regular user for normal operation. To grant such regular users per-command privilege elevation you can use the tool <b>doas</b>, provided by the <span class="fijo">opendoas</span> package. Simply install the package and set it up to allow users of the group <i>wheel</i> to execute commands as <i>root</i> when issued with it:</dt>
-<dd># echo 'permit :wheel as root' > /etc/doas.conf</dd>
-<dt>A very common, yet more internally complex alternative is using sudo for this purpose.</dt>
-<dt><u>b) User defaults:</u> Default user creation parameters are set in <span class="fijo">/etc/default/useradd</span>. Modify the file, and those in <span class="fijo">/etc/skel/</span>, to provide the desired initial environment for new users.</dt>
-<dt><u>c) Adding users:</u> Add the aforementioned regular user (plus any others you may need) and then set their password. In addition to the <i>wheel</i> group, this user should be part of the <i>audio</i>, <i>input</i> and <i>video</i> groups to access audio and input devices and video hardware acceleration, among others:</dt>
-<dd># useradd -m -G audio,video,input,wheel ❬user_name❭</dd>
-<dd># passwd ❬user_name❭</dd>
+    <dt><u>a) Privilege elevation:</u> Once the system is fully set up, it is crucial to log in as a regular user for normal operation. To grant such regular users per-command privilege elevation you can use the tool <b>doas</b>, provided by the <span class="fijo">opendoas</span> package. Simply install the package and set it up to allow users of the group <i>wheel</i> to execute commands as <i>root</i> when issued with it:</dt>
+    <dd># echo 'permit :wheel as root' > /etc/doas.conf</dd>
+    <dd class="texto">A very common, yet more internally complex alternative is using sudo for this purpose.</dd>
+    <dt><u>b) User defaults:</u> Default user creation parameters are set in <span class="fijo">/etc/default/useradd</span>. Modify the file, and those in <span class="fijo">/etc/skel/</span>, to provide the desired initial environment for new users.</dt>
+    <dt><u>c) Adding users:</u> Add the aforementioned regular user (plus any others you may need) and then set their password. In addition to the <i>wheel</i> group, this user should be part of the <i>audio</i>, <i>input</i> and <i>video</i> groups to access audio and input devices and video hardware acceleration, among others:</dt>
+    <dd># useradd -m -G audio,video,input,wheel ❬user_name❭</dd>
+    <dd># passwd ❬user_name❭</dd>
 </dl>
 
 <hr>
@@ -69,11 +73,11 @@ defaults.hwdep.card ❬card_index❭
 defaults.timer.card ❬card_index❭
 <hr>
 </pre>
-<ul>
 Notes:
-<li>You may also, or instead, need to specify the default ALSA <i>device</i>, in the same way.</li>
-<li>If you use applications that require Pulseaudio, install it or the <span class="fijo">apulse</span> package.</li>
-<li>See the “Input and ACPI events” section for details on adjusting volume with hotkeys.</li>
+<ul>
+    <li>You may also, or instead, need to specify the default ALSA <i>device</i>, in the same way.</li>
+    <li>If you use applications that require Pulseaudio, install it or the <span class="fijo">apulse</span> package.</li>
+    <li>See the “Input and ACPI events” section for details on adjusting volume with hotkeys.</li>
 </ul>
 
 <hr>
@@ -82,14 +86,14 @@ Notes:
 
 <h4>Installation</h4>
 <dl>
-<dt>Select the packages needed for a graphical session, including the X server, startup scripts, input and graphics drivers and the message bus system:</dt>
-<dd># PACKS='xorg-minimal mesa-dri dbus-x11</dd>
-<dt>… add bitmap and outline fonts (potentially some with extensive unicode support):</dt>
-<dd>> font-misc-misc dejavu-fonts-ttf (font-unifont-bdf noto-fonts-ttf)</dd>
-<dt>… and your preferred window manager, a tool to launch applications (which may be included with the former) and a terminal emulator—for example:</dt>
-<dd>> spectrwm dmenu st'</dd>
-<dt>Install the selected packages, making sure the repository index is synchronized and that the system is up-to-date:</dt>
-<dd># xbps-install -Su $PACKS</dd>
+    <dt>Select the packages needed for a graphical session, including the X server, startup scripts, input and graphics drivers and the message bus system:</dt>
+    <dd># PACKS='xorg-minimal mesa-dri dbus-x11</dd>
+    <dt>… add bitmap and outline fonts (potentially some with extensive unicode support):</dt>
+    <dd>> font-misc-misc dejavu-fonts-ttf (font-unifont-bdf noto-fonts-ttf)</dd>
+    <dt>… and your preferred window manager, a tool to launch applications (which may be included with the former) and a terminal emulator—for example:</dt>
+    <dd>> spectrwm dmenu st'</dd>
+    <dt>Install the selected packages, making sure the repository index is synchronized and that the system is up-to-date:</dt>
+    <dd># xbps-install -Su $PACKS</dd>
 </dl>
 
 <h4>Configuration</h4>
@@ -125,6 +129,7 @@ Section "InputClass"
 EndSection
 <hr>
 </pre>
+
 <p><u>Graphics driver:</u> To specify the driver to use with a graphics device and its configuration, first find the BusID of the device with <b>lspci</b> (the first column) and format it accordingly—usually just prefixing it with "PCI:" and replacing the dot with a colon—then use it in an X configuration file specifying the desired driver along with any options, in the following format:</p>
 <pre>
 /etc/X11/xorg.conf.d/91-integrated-graphics.conf
@@ -143,6 +148,7 @@ Section "Device"
 EndSection
 <hr>
 </pre>
+
 <p>Session timeouts: To set the screen locker and DPMS timeouts, set the BlankTime and OffTime options respectively in a server flags X configuration file:</p>
 <pre>
 /etc/X11/xorg.conf.d/91-server-flags.conf
@@ -156,10 +162,10 @@ Section "ServerFlags"
 EndSection
 <hr>
 </pre>
-<ul>
 Notes:
-<li>The distinction in Standby, Suspend and Off times is only meaningful for CRT monitors. Furthermore, screen blanking often triggers DPM activation in modern monitors.</li>
-<li>Use the tool <b>xss-lock</b> to run a screen locker (like slock) triggered by the Blank timeout.</li>
+<ul>
+    <li>The distinction in Standby, Suspend and Off times is only meaningful for CRT monitors. Furthermore, screen blanking often triggers DPM activation in modern monitors.</li>
+    <li>Use the tool <b>xss-lock</b> to run a screen locker (like slock) triggered by the Blank timeout.</li>
 </ul>
 
 <h4>Starting the X server</h4>
@@ -170,14 +176,14 @@ Notes:
 #!/bin/sh
 # start some nice programs - some applications put scripts there
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
- for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
-  [ -x "$f" ] && . "$f"
- done
- unset f
+    for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+        [ -x "$f" ] && . "$f"
+    done
+    unset f
 fi
 # apply per-user wallpaper - this uses ImageMagick
 display -background gray12 -backdrop -window root $HOME/Pictures/.wallpaper.*g
-# start locker daemon
+# start screen locker daemon
 xss-lock slock &
 # start session
 dbus-launch --exit-with-x11 spectrwm
@@ -214,17 +220,21 @@ event=button/(power|sleep|lid)
 action=/etc/acpi/handler.sh %e
 <hr>
 </pre>
+
 <h4>Reboot, shutdown and suspend</h4>
 <p>To <u>reboot</u>, simply log out and hit Ctrl+Alt+Del on the login shell, which is set to send the appropriate signal to the OS.</p>
 To <u>shutdown</u> or <u>suspend</u> the system, use <span class="fijo">acpid</span> and <b>zzz</b>. Simply enable the <span class="fijo">acpid</span> service if you have not yet done so, and the following will already be configured for you:
 <ul>
-<li>Shutting down by pressing (but not holding) the power button on your PC. Make sure you have logged out of all sessions first, being dropped out to a login shell.</li>
-<li>Suspending by pressing the sleep button on your PC, or by closing a laptop’s lid.</li>
+    <li>Shutting down by pressing (but not holding) the power button on your PC. Make sure you have logged out of all sessions first, being dropped out to a login shell.</li>
+    <li>Suspending by pressing the sleep button on your PC, or by closing a laptop’s lid.</li>
 </ul>
+
 <h4>Hibernation</h4>
 <p>After setting up an environment that allows for hibernation (with an appropriately sized swap partition and the corresponding kernel parameter), you can trigger it by issuing the "zzz -Z" command as a response to an event of your choosing through acpid.</p>
+
 <h4>Volume and backlight</h4>
 <p>Files to manage <u>volume</u> and <u>backlight</u> related input events through <span class="fijo">acpid</span> are provided in the Appendix.</p>
+
 <h4>Power and battery</h4>
 <p><u>Battery:</u> Some laptops send the appropriate signals the OS as a battery discharges, which you can handle with acpid. For others, you can query battery status and load with the <b>acpi</b> command, provided by the homonymous package, whenever another event occurs or on a timer (see next section).</p>
 <p><u>Power:</u> See the “Power profiles” subsection of the “Power saving and performance” section further below, and the relevant files in the Appendix.</p>
@@ -236,12 +246,12 @@ To <u>shutdown</u> or <u>suspend</u> the system, use <span class="fijo">acpid</s
 <p>Among other things, scheduling can be used to automate system maintenance, updating backups, querying for information over the web, send notifications, etc. Common periodic actions most users will require are described below.</p>
 Notes:
 <ul>
-<li>You should minimally enable the <span class="fijo">snooze-daily</span> service, as daily scheduling is used for some system maintenance tasks.</li>
-<li>Consider installing the package <span class="fijo">PopCorn</span>, which provides a service that uses snooze as well and supplies the Void project with anonymous package statistics.</li>
+    <li>You should minimally enable the <span class="fijo">snooze-daily</span> service, as daily scheduling is used for some system maintenance tasks.</li>
+    <li>Consider installing the package <span class="fijo">PopCorn</span>, which provides a service that uses snooze as well and supplies the Void project with anonymous package statistics.</li>
 </ul>
+
 <h4>Network Time Synchronization</h4>
 <p>There are many ways to synchronize the system’s clock with that of a time server. A simple and effective one is using the SNTP Perl script from the site kloth.net:</p>
-
 <p>&emsp;i) Install <span class="fijo">perl</span> if you have not already. Apart from being handy, Perl is a dependency of a large amount of packages so it would likely be pulled as such at some point.</p>
 <p>&emsp;ii) Copy the script on the website to a file, commenting out the invocation of the “output_ntp_data” function (as suggested) near the bottom, to make it less verbose.</p>
 <p>&emsp;iii) Set is as executable, and drop it in <span class="fijo">/usr/local/bin/</span>.</p>
@@ -255,9 +265,10 @@ Notes:
 </pre>
 Notes:
 <ul>
-<li>By running the script without the "-u" option on a terminal, you can see the network time and its delta compared to your system’s time. Small deltas, &lt;1s, are expected, but even deltas of several seconds are usually not a problem.</li>
-<li>If accuracy is critical, or if your hardware clock tends to deviate substantially from the actual time, consider using an NTP daemon instead.</li>
+    <li>By running the script without the "-u" option on a terminal, you can see the network time and its delta compared to your system’s time. Small deltas, &lt;1s, are expected, but even deltas of several seconds are usually not a problem.</li>
+    <li>If accuracy is critical, or if your hardware clock tends to deviate substantially from the actual time, consider using an NTP daemon instead.</li>
 </ul>
+
 <h4>Filesystem TRIM</h4>
 <p>Filesystems on SSD drives should be subject to <i>trimming</i> periodically to maintain drive performance and health. For this, use the tool <span class="fijo">fstrim</span> provided by the <span class="fijo">util-linux</span> package, itself a dependency of the <span class="fijo">base-minimal</span> meta-package.</p>
 <p>To trim all supported filesystems listed in <span class="fijo">fstab</span> weekly, use the following:</p>
@@ -270,6 +281,7 @@ Notes:
 </pre>
 <i>Tip: That above is periodic trim. Do not use continuous trim -the “discard” mount option or flag- unless you have a solid understanding of its purpose and how it would affect your drive.</i>
 </section>
+    
 <br>
 <nav>
 <a href="index.html">Home</a>
@@ -279,9 +291,10 @@ Notes:
 <a href="appendix.html">Appendix</a>
 </nav>
 <br>
+    
 <footer>
-<p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
-<p>Contact: german.rebord@live.com</p>
+    <p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
+    <p>Contact: german.rebord@live.com</p>
 </footer>
 </div>
 </body>
