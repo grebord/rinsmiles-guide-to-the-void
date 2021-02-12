@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>System Management - Rinsmiles´ Guide to the Void</title>
+	<title>System Management - rinsmiles´ Guide to the Void</title>
 	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
 
@@ -14,7 +14,7 @@
         <div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
     </div>
     <img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-15px;">
-    <h1>Rinsmiles´ Guide to the Void</h1>
+    <h1>rinsmiles´ Guide to the Void</h1>
     <h3>Version 2021.02</h3>
 </header>
 
@@ -32,6 +32,14 @@
 <h1>System Components and Management</h1>
 
 <hr class="seccion">
+<dl>
+    <dt>Before advancing with this section it can be useful to take another look at <b>runit</b>’s man pages and its official documentation through <span class="fijo">void-docs</span> to brush up on its functions, components and associated commands.</dt>
+    <dd># void-docs -r services/index</dd>
+</dl>
+<p>Common actions include enabling services by sym-linking a service’s directory in <span class="fijo">/etc/sv/</span> into <span class="fijo">/var/service/</span>, managing monitored services with the <b>sv</b> command, and automatically executing commands on system startup by adding them to <span class="fijo">/etc/rc.local</span>.</p>
+<p>Also, don't forget you can check the system logs with the <b>dmesg</b> command.</p>
+
+<hr class="seccion">
 <h3>Network</h3>
 <p>Do any necessary configuration to connect to the internet and persist it across boots. If not using static IPs you will minimally need to set up a <u>DHCP</u> client, and a <u>wireless daemon</u> if using Wi-Fi:</p>
 
@@ -44,7 +52,7 @@
 <hr class="seccion">
 <h3>Firewall</h3>
 <dl>
-    <dt>You can manage the kernel firewall with <b>iptables</b>. For quick setup for IPv4 connections, apply the <span class="fijo">simple_firewall.rules</span> present in <span class="fijo">/etc/iptables/</span> with the <span class="fijo">iptables-restore ❬rules❭</span> command. See the Void docs for more details:</dt>
+    <dt>You can manage the kernel firewall with <b>iptables</b>. For quick setup for IPv4 connections, apply the <span class="fijo">simple_firewall.rules</span> present in <span class="fijo">/etc/iptables/</span> with the <span class="fijo">iptables-restore ❬rules❭</span> command. This can be done automatically on system startup by adding such command to <span class="fijo">/etc/rc.local</span>. See the Void docs for more details:</dt>
     <dd># void-docs -r firewall</dd>
 </dl>
 <i>Tip: If using iptables, you should follow the “Simple stateful firewall” guide in the ArchWiki to generate a more elaborate rule set, and which has a description of what each rule does.</i>
@@ -304,11 +312,11 @@ Notes:
 
 <br>
 <nav>
-<a href="index.html">Home</a>
-<a href="install.html">Installation</a>
-<a href="system.html">System Components and Management</a>
-<a href="power.html">Power saving and performance</a>
-<a href="appendix.html">Appendix</a>
+    <a href="index.html">Home</a>
+    <a href="install.html">Installation</a>
+    <a href="system.html">System Components and Management</a>
+    <a href="power.html">Power saving and performance</a>
+    <a href="appendix.html">Appendix</a>
 </nav>
 <br>
     
