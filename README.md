@@ -12,10 +12,10 @@ The installation is performed from the ground up, by bootstrapping the new syste
 
 This guide assumes that the user is familiar with the use of a shell, core utilities and GNU/Linux operating systems, and that they will take a look at specific documentation of any tool and feature with which they are not.
 
-**Contributions are obviously welcome!**
+**Contributions are welcome!**
 
 rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit
 https://creativecommons.org/licenses/by/4.0 
 
-**Why "rinsmiles"?**
-*rinsmiles* is a username I used to use on Reddit, where I released the first version of this guide.
+**Why "rinsmiles"?**  
+*rinsmiles* is a username I use on Reddit, where I released the first version of this guide.
