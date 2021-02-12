@@ -31,9 +31,10 @@
 <section>
 <h1>Installation</h1>
 
-<h3>0. Boot a base live image of Void and login as root.</h3>
+<hr class="seccion">
+<h3 style="margin:-5px 0px -10px;">0. Boot a base live image of Void and login as root.</h3>
 
-<hr>
+<hr class="seccion">
 <h3>1. Set keyboard layout and desired font</h3>
 <dl>
     <dt>The default keyboard layout is <span class="fijo">us</span>, and the default small font is <span class="fijo">default8x16</span>.</dt>
@@ -41,7 +42,7 @@
     <dd class="texto">Console fonts reside in <span class="fijo">/usr/share/kbd/consolefonts/</span>. You can set one with <b>setfont.</b></dd>
 </dl>
 
-<hr>
+<hr class="seccion">
 <h3>2. Set up filesystems</h3>
 <p>You will minimally need to set up a <u>root partition</u>, and an <u>EFI system partition</u> (ESP) under UEFI.</p>
 a) Identify the block devices to manage—you can list them with <b>lsblk</b>.
@@ -62,27 +63,30 @@ c) Format the created partitions with <b>mkfs</b>.
 </ul>
 <p>d) Finally, <b>mount</b> the created partitions—you can mount the root partition to <span class="fijo">/mnt/</span>, create the directory <span class="fijo">/mnt/boot</span>, and then mount the ESP to such directory.</p>
 
-<hr>
+<hr class="seccion">
 <h3>3. Connect to the internet</h3>
 <dl>
     <dt>If you are on a <u>wired network</u>, you will likely already be connected to the internet. Verify this with a tool like <span class="fijo">ping</span>, for example (hitting Ctrl+C to interrupt it):</dt>
     <dd># ping voidlinux.org</dd>
 </dl>
-<p>If you are on a <u>wireless network</u>, the connection will have to be configured:</p>
 <dl>
-    <dt>i) Make sure the interface is not hard or soft blocked. Do the latter using <b>rfkill</b>:</dt>
-    <dd># rfkill unblock wlan</dd>
-    <dt>ii) Check that the wireless interface is listed with the <b>ip link</b> command, then set it up:</dt>
-    <dd># ip link set ❬wireless_interface❭ up</dd>
-    <dt>iii) Configure the wireless network using <b>wpa_supplicant</b>:</dt>
-    <dd># wpa_passphrase ❬ssid❭ ❬passphrase❭ >> /etc/wpa_supplicant/wpa_supplicant.conf</dd>
-    <dd># wpa_supplicant -B -i ❬wireless_interface❭  -c /etc/wpa_supplicant/wpa_supplicant.conf</dd>
-    <dt>iv) Disable <b>dhcpcd</b>'s Link-local IPv4 addressing and issue an interface rebind:</dt>
-    <dd># echo 'noipv4ll' >> /etc/dhcpcd.conf</dd>
-    <dd># dhcpcd -n</dd>
+   <dt>If you are on a <u>wireless network</u>, the connection will have to be configured:</dt>
+    <dd class="texto">
+        <dl>
+            <dt>i) Make sure the interface is not hard or soft blocked. Do the latter using <b>rfkill</b>:</dt>
+            <dd># rfkill unblock wlan</dd>
+            <dt>ii) Check that the wireless interface is listed with the <b>ip link</b> command, then set it up:</dt>
+            <dd># ip link set ❬wireless_interface❭ up</dd>
+            <dt>iii) Configure the wireless network using <b>wpa_supplicant</b>:</dt>
+            <dd># wpa_passphrase ❬ssid❭ ❬passphrase❭ >> /etc/wpa_supplicant/wpa_supplicant.conf</dd>
+            <dd># wpa_supplicant -B -i ❬wireless_interface❭  -c /etc/wpa_supplicant/wpa_supplicant.conf</dd>
+            <dt>iv) Disable <b>dhcpcd</b>'s Link-local IPv4 addressing and issue an interface rebind:</dt>
+            <dd># echo 'noipv4ll' >> /etc/dhcpcd.conf</dd>
+            <dd># dhcpcd -n</dd>
+        </dl>
+    </dd>
 </dl>
-
-<hr>
+<hr class="seccion">
 <h3>4. Install Void on the mounted filesystem</h3>
 <p>Set up the parameters that <b>xbps-install</b> will use to install the new system:</p>
 <dl>
@@ -122,7 +126,7 @@ c) Format the created partitions with <b>mkfs</b>.
     <dd>> $PACKS</dd>
 </dl>
 
-<hr>
+<hr class="seccion">
 <h3>5. Chroot into the newly installed system</h3>
 <dl>
     <dt>a) Mount the pseudo-filesystems needed for a chroot:</dt>
@@ -136,7 +140,7 @@ c) Format the created partitions with <b>mkfs</b>.
 </dl>
 <p>Note: Having installed <b>void-docs</b> on the new system, you can now access Void’s documentation directly using that command with the option ”-r“, which displays items as regular man pages.</p>
 
-<hr>
+<hr class="seccion">
 <h3>6. Configure the basics</h3>
 <dl>
     <dt>a) Set the system’s hostname:</dt>
@@ -151,9 +155,10 @@ c) Format the created partitions with <b>mkfs</b>.
     <dd># findmnt -kl -o SOURCE,UUID,TARGET,FSTYPE,OPTIONS --real</dd>
 </dl>
 For example, the file may result like so:
-<pre>
+
+<div class="archivo">
 /etc/fstab
-<hr>
+<pre>
 # &lt;file system&gt;  	&lt;dir&gt;  		&lt;type&gt;		&lt;options&gt; 			&lt;dump&gt;&lt;pass&gt;
 # /dev/sda2
 UUID=a1b2(...)		/		ext4		defaults			0	1
@@ -161,8 +166,9 @@ UUID=a1b2(...)		/		ext4		defaults			0	1
 UUID=9Z8Y(...)		/boot		vfat		defaults,umask=022,utf8		0	2
 # /tmp tmpfs
 tmpfs 	       		/tmp		tmpfs		defaults,nosuid,nodev 		0	0
-<hr>
 </pre>
+</div>
+
 <dl>
     <dt>f) If you used another mirror in place of the default one for installation, add that to your XBPS configuration by overriding the corresponding system configuration file—e.g:</dt>
     <dd># echo 'repository=https://alpha.us.repo.voidlinux.org/current' > \</dd>
@@ -172,7 +178,7 @@ tmpfs 	       		/tmp		tmpfs		defaults,nosuid,nodev 		0	0
     <dd># echo 'rfkill unblock wlan' >> /etc/rc.local</dd>
 </dl>
 
-<hr>
+<hr class="seccion">
 <h3>7. Set up swap</h3>
 <p>Setting up swap is required if you will use hibernation, and necessary on systems with low to moderate amounts of physical memory (and otherwise simply prudent).<br>
 If you have created a swap partition, start in step <b>d</b> below replacing "/swap" with your swap partition (prefer UUID for the fstab entry). Or else, set up a swap file going through the following steps:</p>
@@ -198,13 +204,14 @@ If you have created a swap partition, start in step <b>d</b> below replacing "/s
     <dd># echo '/swap none swap sw 0 0' >> /etc/fstab</dd>
 </dl>
 
-<hr>
+<hr class="seccion">
 <h3>8. Make the new installation bootable</h3>
 <p>You can <u>boot the kernel directly</u> as an EFI executable or <u>use a separate bootloader</u>.</p>
 <dl>
     <dt>To set up the bootloader GRUB, consult the Void documentation with the <b>void-docs</b> command:</dt>
     <dd># void-docs -r chroot</dd>
-    <dd class="texto">Note: Many UEFI implementations allow choosing boot entries on startup, which may make using a separate bootloader/manager for multi-booting superfluous.</dd>
+    <dt><i>Note: Many UEFI implementations allow choosing boot entries on startup, which may make using a separate bootloader/manager for multi-booting superfluous.</i></dt>
+    <dd>&emsp;</dd>
 </dl>
 
 <p>To load the kernel directly as an EFI executable, use <b>efibootmgr</b>:</p>
@@ -218,7 +225,7 @@ If you have created a swap partition, start in step <b>d</b> below replacing "/s
     <dd># mount efivarfs</dd>
 </dl>
 
-<hr>
+<hr class="seccion">
 <h3>9. Reconfigure and reboot</h3>
 <dl>
     <dt>Use <b>xbps-reconfigure</b> to ensure all installed packages are set up properly:</dt>
@@ -227,6 +234,7 @@ If you have created a swap partition, start in step <b>d</b> below replacing "/s
 </dl>
 <p>At this point, the installation is complete. <span class="fijo">exit</span> the chroot, unmount or sync the new filesystems manually to be sure no writes are pending, and reboot the computer with “<span class="fijo">shutdown -r now</span>”.</p>
 </section>
+<br>
 
 <br>
 <nav>

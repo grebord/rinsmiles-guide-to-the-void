@@ -17,7 +17,7 @@ header, footer {
 nav {
     width:100%;
     text-align: center;
-    background: #deede4;
+    background: #e7f0ed;
     border-style: solid none;
     border-width: 1px;
     border-color: Teal;
@@ -30,9 +30,6 @@ nav a {
 }
 nav a:hover {
     color: Teal;
-}
-div {
-    padding-bottom: 5px;
 }
 dt {
     padding-top: 10px;
@@ -59,15 +56,8 @@ hr {
     margin-top: 25px;
     color: #deede4;
 }
-pre {
-    font-family: 'Source Code Pro', monospace;
-    font-size: 14px;
-    margin-right: 40px;
-}
-pre hr {
-    color: LightGray;
-    margin-top: 5px;
-    margin-bottom: -5px;
+hr.seccion {
+    margin: 50px 0px 40px;
 }
 table {
     margin: auto;
@@ -81,12 +71,12 @@ td {
 }
 div.leftbanner {
     position:absolute;
-    left:15px;
-    top:-10px;
+    left:20px;
+    top:-5px;
 }
 div.button {
-    background:#53936d;
-    padding: 5px 15px;
+    background:#5c7c64;
+    padding: 3px 15px;
     margin: 0px 0px 2px;
 }
 div.button a {
@@ -98,15 +88,27 @@ div.button a:hover {
 }
 section h1 {
     color: #2e523d;
+    text-align: center;
 }
 section h3 {
     color: #2e523d;
-    padding-top: 5px;
     padding-bottom: 0px;
     margin-bottom: 0px;
 }
 section h4 {
     color: #1c3124;
+    padding-top: 10px;
     padding-bottom: 0px;
     margin-bottom: 0px;
+}
+div.archivo {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 14px;
+    padding: 20px;
+}
+div.archivo pre {
+    margin: 5px 0px 0px;
+    padding: 8px 0px 10px;
+    border-style: dashed none;
+    border-width: 1px;
 }

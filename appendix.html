@@ -31,96 +31,94 @@
 <section>
 <h1>APPENDIX</h1>
 
+<hr class="seccion">
+
 <p>Files in the Appendix should simply be copied to their corresponding system directories. Make sure that all files are readable, and additionally that all scripts are executable.</p>
 <p>The scripts are made for <b>dash</b> (Debian Almquist shell), so they should be quite compatible.</p>
 <p><u>WARNING:</u> The scripts in the Power Management section below need testing. They should be safe to try, but take a look at them prior to use.</p>
 
+<hr class="seccion">
 <h3>POWER MANAGEMENT</h3>
 <br>
 
-<pre>
+<div class="archivo">
 /etc/acpi/events/ac_adapter
-<hr>
+<pre>
 # Change power mode on power source transition
 event=ac_adapter
 action=/etc/acpi/handlers/power-ctl %e
-<hr>
 </pre>
+</div>
 
-<pre>
+<div class="archivo">
 /etc/acpi/handlers/power-ctl
-<hr>
-</pre>
+<pre>
 See <a href="https://github.com/grebord/rinsmiles-guide-to-the-void/blob/main/scripts/power-ctl">power-ctl on Github</a>
-<pre>
-<hr>
 </pre>
+</div>
 
-<pre>
+<div class="archivo">
 /etc/acpi/resources/laptop_mode
-<hr>
-</pre>
-See <a href="https://github.com/grebord/rinsmiles-guide-to-the-void/blob/main/scripts/laptop_mode">laptop_mode on Github</a>
 <pre>
-<hr>
+See <a href="https://github.com/grebord/rinsmiles-guide-to-the-void/blob/main/scripts/laptop_mode">laptop_mode on Github</a>
 </pre>
+</div>
 
+<hr class="seccion">
 <h3>VOLUME AND BACKLIGHT</h3>
 <br>
 
-<pre>
+<div class="archivo">
 /etc/acpi/events/video-brightnessup
-<hr>
+<pre>
 # Increase screen brightness through dedicated script
 event=video/brightnessup
 action=/etc/acpi/handlers/backlight-ctl.sh up
-<hr>
 </pre>
+</div>
 
-<pre>
+<div class="archivo">
 /etc/acpi/events/video-brightnessdown
-<hr>
+<pre>
 # Decrease screen brightness through dedicated script
 event=video/brightnessdown
 action=/etc/acpi/handlers/backlight-ctl.sh down
-<hr>
 </pre>
+</div>
 
-<pre>
+<div class="archivo">
 /etc/acpi/handlers/backlight-ctl.sh
-<hr>
-</pre>
+<pre>
 See <a href="https://github.com/grebord/rinsmiles-guide-to-the-void/blob/main/scripts/backlight-ctl.sh">backlight-ctl.sh on Github</a>
-<pre>
-<hr>
 </pre>
+</div>
 
-<pre>
+<div class="archivo">
 /etc/acpi/events/button-volumeup
-<hr>
+<pre>
 # Raise Master volume of default ALSA device
 event=button/volumeup
 action=/usr/bin/amixer set Master 5%%+
-<hr>
 </pre>
+</div>
 
-<pre>
+<div class="archivo">
 /etc/acpi/events/button-volumedown
-<hr>
+<pre>
 # Lower Master volume of default ALSA device
 event=button/volumedown
 action=/usr/bin/amixer set Master 5%%-
-<hr>
 </pre>
+</div>
 
-<pre>
+<div class="archivo">
 /etc/acpi/events/button-volumemute
-<hr>
+<pre>
 # Toggle Master volume of default ALSA device
 event=button/mute
 action=/usr/bin/amixer set Master toggle
-<hr>
 </pre>
+</div>
 
 </section>
 
