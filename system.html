@@ -182,7 +182,7 @@ EndSection
 Notes:
 <ul>
     <li>The distinction in Standby, Suspend and Off times is only meaningful for CRT monitors. Furthermore, screen blanking often triggers DPM activation in modern monitors.</li>
-    <li>Use the tool <b>xss-lock</b> to run a screen locker (like slock) triggered by the Blank timeout.</li>
+    <li>Use the tool <b>xss-lock</b> to run a screen locker (like <span class="fijo">slock</span>) triggered by the Blank timeout.</li>
 </ul>
 
 <h4>Starting the X server</h4>
@@ -228,7 +228,7 @@ Once you have tested your configuration to work, consider modifying the <span cl
 <hr class="seccion">
 <h3>Input and ACPI events</h3>
 
-<p>To manage input and ACPI events you use <b>acpid</b>, a daemon which links such events to an action. It can be used to set volume and backlight levels on key presses, to react to power or battery related events, and much more. Generically, to trigger an action in response to an event:</p>
+<p>To manage input and ACPI events use <b>acpid</b>, a daemon which links such events to an action. It can be used to set volume and backlight levels on key presses, to react to power or battery related events, and much more. Generically, to trigger an action in response to an event:</p>
 <p>i) Use the tool <b>acpi_listen</b> to identify the event by triggering it.</p>
 <p>ii) Add an entry for the event to a file in <span class="fijo">/etc/acpi/events/</span>, and its associated handler script (if such is required) in <span class="fijo">/etc/acpi/handlers/</span>.</p>
 <p>iii) Restart the <span class="fijo">acpid</span> service.</p>
@@ -252,7 +252,7 @@ To <u>shutdown</u> or <u>suspend</u> the system, use <span class="fijo">acpid</s
 </ul>
 
 <h4>Hibernation</h4>
-<p>After setting up an environment that allows for hibernation (with an appropriately sized swap partition and the corresponding kernel parameter), you can trigger it by issuing the "zzz -Z" command as a response to an event of your choosing through acpid.</p>
+<p>After setting up an environment that allows for hibernation (with an appropriately sized swap partition and the corresponding kernel parameter), you can trigger it by issuing the “<span class="fijo">zzz -Z</span>” command as a response to an event of your choosing through <span class="fijo">acpid</span>.</p>
 
 <h4>Volume and backlight</h4>
 <p>Files to manage <u>volume</u> and <u>backlight</u> related input events through <span class="fijo">acpid</span> are provided in the Appendix.</p>

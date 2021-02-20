@@ -37,7 +37,7 @@
 <hr class="seccion">
 <h3>1. Set keyboard layout and desired font</h3>
 <dl>
-    <dt>The default keyboard layout is <span class="fijo">us</span>, and the default small font is <span class="fijo">default8x16</span>.</dt>
+    <dt>The default keyboard layout is <span class="fijo">us</span>, and the default small font is <span class="fijo">iso01.16</span>.</dt>
     <dd class="texto">Available layouts are located in <span class="fijo">/usr/share/kbd/keymaps/</span>. You can set one with <b>loadkeys.</b></dd>
     <dd class="texto">Console fonts reside in <span class="fijo">/usr/share/kbd/consolefonts/</span>. You can set one with <b>setfont.</b></dd>
 </dl>
@@ -219,7 +219,7 @@ If you have created a swap partition, start in step <b>d</b> below replacing "/s
     <dt>i) Go through the options in <span class="fijo">/etc/default/efibootmgr-kernel-hook</span>, enabling modification of EFI entries so that a boot entry is automatically generated on kernel package reconfiguration.</dt>
     <dd class="texto">•&ensp;<span class="fijo">OPTIONS</span> needs to supply the root partition, in the form ”<span class="fijo">root=UUID=a1b2(...)</span>“. You can use <span class="fijo">blkid</span> or <span class="fijo">lslbk</span> to add the UUID string to the file. Common kernel parameters to add here are ”<span class="fijo">resume=❬swap_partition❭</span>“ if using hibernation and ”<span class="fijo">quiet</span>“ if wishing to see fewer log messages during system startup.</dd>
     <dd class="texto">•&ensp;<span class="fijo">DISK + PART</span> point to the ESP. Due to a potential issue with block device name persistence (where a device <i>sdX</i> may later on surface as <i>sdY</i>) set the <span class="fijo">DISK</span> parameter dynamically using <span class="fijo">findmnt</span>, where <span class="fijo">❬ESP_dir❭</span> below is your ESP mount directory (e.g. <span class="fijo">/boot</span>):<br><span class="fijo">DISK="$(findmnt -enrs -o SOURCE -M ❬ESP_dir❭ | cut -c -8)"</span></dd>
-    <dd class="texto">Note that for NVMe drives, the device name will have to be formatted differently.</dd>
+    <dd class="texto"><i>Note that for NVMe drives, the device name will have to be formatted differently.</i></dd>
     <dt>ii) Add an entry for the system's <i>efivars</i> to fstab, and mount them manually so that the boot entry can be generated in the next step:</dt>
     <dd># echo 'efivarfs /sys/firmware/efi/efivars efivarfs defaults 0 0' >> /etc/fstab</dd>
     <dd># mount efivarfs</dd>
@@ -230,8 +230,8 @@ If you have created a swap partition, start in step <b>d</b> below replacing "/s
 <dl>
     <dt>Use <b>xbps-reconfigure</b> to ensure all installed packages are set up properly:</dt>
     <dd># xbps-reconfigure -fa</dd>
-    <dd class="texto">This also generates a boot entry for the new installation. Review the generated boot configuration with the <span class="fijo">efibootmgr</span> command, as you may need to update the boot order on first install.</dd>
 </dl>
+<p>This also generates a boot entry for the new installation. Review the generated boot configuration with the <span class="fijo">efibootmgr</span> command, as you may need to update the boot order on first install.</p>
 <p>At this point, the installation is complete. <span class="fijo">exit</span> the chroot, unmount or sync the new filesystems manually to be sure no writes are pending, and reboot the computer with “<span class="fijo">shutdown -r now</span>”.</p>
 </section>
 <br>
