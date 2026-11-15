@@ -1,21 +1,12 @@
-## rinsmiles' Guide to the Void
+# yeneko’s Guide to the Void has moved
 
-https://grebord.github.io/rinsmiles-guide-to-the-void/
+Read the guide at **[yeneko’s Den](https://rebord.pro/den/void.html)**.
 
-rinsmiles´ Guide to the Void is a guide for installing and setting up a Void operating system:
+The maintained guide and its scripts now live in
+[rebord/den on GitLab](https://gitlab.com/rebord/den). Contributions are welcome there.
 
-https://voidlinux.org
+The [original ODT document](odt/rinsmiles-guide-to-the-void-202009.odt) remains
+here unchanged as an archive.
 
-It mainly, and merely intends to guide the user through the steps, providing hints and examples along the way, and it is complemented by the official Void documentation.
-
-The installation is performed from the ground up, by bootstrapping the new system with the XBPS package manager from a console. After following through with this guide, the user will have a fully configured, reliable, performant and fundamental system which they can then tune and extend to their requirements.
-
-This guide assumes that the user is familiar with the use of a shell, core utilities and GNU/Linux operating systems, and that they will take a look at specific documentation of any tool and feature with which they are not.
-
-**Contributions are welcome!**
-
-rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit
-https://creativecommons.org/licenses/by/4.0 
-
-**Why "rinsmiles"?**  
-*rinsmiles* is a username I use on Reddit, where I released the first version of this guide.
+By Germán Rebord · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+· [contact@rebord.pro](mailto:contact@rebord.pro)
