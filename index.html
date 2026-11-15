@@ -1,98 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Home - rinsmiles´ Guide to the Void</title>
-	<link rel="stylesheet" type="text/css" href="main.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guide to the Void has moved — yeneko’s Den</title>
+  <meta name="description" content="yeneko’s Guide to the Void now lives at yeneko’s Den.">
+  <link rel="canonical" href="https://rebord.pro/den/void.html">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #302f2d; background: #f6f3ed; font: 18px/1.7 system-ui, sans-serif; }
+    header { padding: 18px max(24px, calc((100% - 760px) / 2)); color: #eee; background: #202020; }
+    header a { color: inherit; text-decoration: none; }
+    main { max-width: 808px; margin: 70px auto; padding: 0 24px; }
+    .eyebrow { color: #a34220; font-size: 12px; letter-spacing: 0.12em; }
+    h1 { margin: 16px 0 24px; font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.15; font-weight: 400; letter-spacing: -0.035em; }
+    p { max-width: 620px; }
+    a { color: #a34220; text-underline-offset: 0.2em; }
+    a:focus-visible { outline: 3px solid #f86c3a; outline-offset: 4px; }
+    .visit { display: inline-block; margin: 14px 0 24px; padding: 12px 22px; border-radius: 4px; color: #f6f3ed; background: #a34220; text-decoration: none; }
+    footer { margin-top: 36px; padding-top: 22px; border-top: 1px solid #dcd5cb; color: #6b655e; font-size: 14px; }
+  </style>
 </head>
-
 <body>
-<div class="contenido">
-
-<header>
-    <div class="leftbanner">
-        <div class="button"><a href="https://github.com/grebord/rinsmiles-guide-to-the-void">Improve this guide<br>on Github</a></div>
-        <div class="button"><a href="https://docs.voidlinux.org/">See the official<br>Void Handbook</a></div>
-    </div>
-    <img src="rgttv-banner.png" alt="banner" width="200" height="120" style="position:absolute;right:0px;top:-15px;">
-    <h1>rinsmiles´ Guide to the Void</h1>
-    <h3>Version 2021.02</h3>
-</header>
-
-<hr>
-<section style="text-align:center; padding:10px 40px;">
-    <p>rinsmiles´ Guide to the Void is a guide for installing and setting up a <b>Void</b> GNU/Linux operating system:</p>
-    <p><a href="https://voidlinux.org/">voidlinux.org</a></p>
-    <p>It mainly, and merely intends to guide the user through the steps, providing hints and examples along the way, and it is complemented by the official Void documentation.</p>
-    <p>The installation is performed from the ground up, by bootstrapping the new system with the XBPS package manager from a console. After following through with this guide, the user will have a fully configured, reliable, performant and fundamental system which they can then tune and extend to their requirements.</p>
-    <p>This guide assumes that the user is familiar with the use of a shell, core utilities and GNU/Linux operating systems, and that they will take a look at specific documentation of any tool and feature with which they are not.</p><br>
-</section>
-<hr>
-
-<section>
-<h3>Contents:</h3>
-<br>
-<table>
-<tr>
-    <td style="background-color:#deede4;">
-        <dl>
-            <dt><a href="install.html">Installation</a></dt>
-            <dd class="texto">0. Boot a base live image of Void and login as root.</dd>
-            <dd class="texto">1. Set keyboard layout and desired font</dd>
-            <dd class="texto">2. Set up filesystems</dd>
-            <dd class="texto">3. Connect to the internet</dd>
-            <dd class="texto">4. Install Void on the mounted filesystem</dd>
-            <dd class="texto">5. Chroot into the newly installed system</dd>
-            <dd class="texto">6. Configure the basics</dd>
-            <dd class="texto">7. Set up swap</dd>
-            <dd class="texto">8. Make the new installation bootable</dd>
-            <dd class="texto">9. Reconfigure and reboot</dd>
-        </dl>
-    </td>
-    <td style="background-color:#f0f0f0;">
-        <dl>
-            <dt><a href="system.html">System Components and Management</a></dt>
-            <dd class="texto">Network</dd>
-            <dd class="texto">Firewall</dd>
-            <dd class="texto">Users</dd>
-            <dd class="texto">Audio</dd>
-	    <dd class="texto">Display server</dd>
-	    <dd class="texto">Input and ACPI events</dd>
-	    <dd class="texto">Scheduled actions</dd>
-        </dl>
-    </td>
-</tr>
-<tr>
-    <td style="background-color:#f0f0f0;">
-        <dl>
-            <dt><a href="power.html">Power saving and performance</a></dt>
-            <dd class="texto">Laptop mode</dd>
-            <dd class="texto">Lockup detectors</dd>
-            <dd class="texto">PCI and SCSI bus devices</dd>
-            <dd class="texto">HDD Advanced Power Management</dd>
-            <dd class="texto">Filesystems and virtual memory</dd>
-            <dd class="texto">Audio power save</dd>
-            <dd class="texto">CPU frequency scaling</dd>
-            <dd class="texto">Initial images</dd>
-            <dd class="texto">Power profiles</dd>
-            <dd class="texto">What about...?</dd>
-        </dl>
-    </td>
-    <td style="background-color:#deede4;">
-        <dl>
-            <dt><a href="appendix.html">Appendix</a></dt>
-            <dd class="texto">Power Management</dd>
-            <dd class="texto">Volume and Backlight</dd>
-        </dl>
-    </td>
-</tr>
-</table>
-</section>
-<br>
-<hr>
-<footer>
-    <p>rinsmiles´ Guide to the Void is licensed under CC BY 4.0. To view a copy of this license, visit <br> <a href="https://creativecommons.org/licenses/by/4.0">https://creativecommons.org/licenses/by/4.0</a></p>
-    <p>Contact: german.rebord@live.com</p>
-</footer>
-</div>
+  <header><a href="https://rebord.pro/den/">yeneko’s Den</a></header>
+  <main>
+    <p class="eyebrow">VOID LINUX / A DIY GUIDE</p>
+    <h1>The guide has a new home.</h1>
+    <p><strong>yeneko’s Guide to the Void</strong> is now part of yeneko’s Den.
+      Read the guide and find its scripts at the new address.</p>
+    <a class="visit" href="https://rebord.pro/den/void.html">Read the Guide to the Void →</a>
+    <p>Source and contributions: <a href="https://gitlab.com/rebord/den">GitLab</a>.
+      The <a href="odt/rinsmiles-guide-to-the-void-202009.odt">original ODT document</a>
+      remains here unchanged as an archive.</p>
+    <footer>
+      <p>By Germán Rebord · <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a><br>
+        <a href="mailto:contact@rebord.pro">contact@rebord.pro</a></p>
+    </footer>
+  </main>
 </body>
 </html>
